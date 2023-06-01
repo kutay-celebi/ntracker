@@ -1,22 +1,43 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { EntryReportDO } from '../../../preload/db/types/EntryReportDO'
+import { ref, watch } from 'vue'
+import { PropType } from 'vue/dist/vue'
 import { EntryDO } from '../../../preload/db/types/Entry'
 
 const props = defineProps({
-  data: {
-    type: null as unknown as PropType<EntryDO>
-  },
-  show: {
-    type: Boolean,
-    default: false
+  entry: {
+    type: null as unknown as PropType<EntryDO | undefined>
   }
 })
+const entryReport = ref<EntryReportDO>()
+
+watch(
+  () => [props.entry],
+  () => {
+    prepareReport()
+  }
+)
+const prepareReport = async () => {
+  if (props.entry && props.entry.id) {
+    await window.api.getEntryReport(props.entry.id).then((value) => {
+      entryReport.value = value
+    })
+  } else {
+    entryReport.value = undefined
+  }
+}
 </script>
 
 <template>
-  <el-dialog>
-    <el-card :title="props.data.label"> test </el-card>
-  </el-dialog>
+  <el-card header="Report">
+    <div v-if="entryReport">
+      <el-table :data="entryReport.monthly" show-summary>
+        <el-table-column label="Entry" prop="date" />
+        <el-table-column label="Sum" prop="sum" />
+      </el-table>
+    </div>
+    <el-alert v-else show-icon type="info" :closable="false" effect="dark"> Select row first. </el-alert>
+  </el-card>
 </template>
 
 <style scoped lang="less"></style>

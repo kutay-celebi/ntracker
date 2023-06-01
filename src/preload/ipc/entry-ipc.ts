@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import { Entry, EntryDO } from '../db/types/Entry'
 import { EntryListQuery } from '../db/types/EntryListQuery'
+import { EntryReportDO } from '../db/types/EntryReportDO'
 import { EntryTimelog } from '../db/types/EntryTimelog'
 import { InferAttributes, Op, WhereOptions } from 'sequelize'
 import dayjs from 'dayjs'
@@ -52,4 +53,25 @@ ipcMain.handle('db.entry.removeById', async (_event, args: string) => {
       id: args
     }
   })
+})
+
+ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {
+  const response = await Entry.findByPk(args, { include: [{ model: EntryTimelog, as: 'timelogs' }] })
+  if (!response) {
+    return Promise.resolve()
+  }
+
+  const report: EntryReportDO = { all: { sum: 0 }, monthly: [] }
+  response.timelogs?.forEach((tl) => {
+    const item = report.monthly.find((mr) => mr.date === dayjs(tl.date).format('YYYY-MM'))
+    if (item) {
+      item.sum += tl.duration
+    } else {
+      report.monthly.push({ date: dayjs().format('YYYY-MM'), sum: tl.duration })
+    }
+
+    report.all.sum += tl.duration
+  })
+
+  return Promise.resolve(report)
 })

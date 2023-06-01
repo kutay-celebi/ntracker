@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { Entry } from './db/types/Entry'
+import { Entry, EntryDO } from './db/types/Entry'
 import { EntryListQuery } from './db/types/EntryListQuery'
+import { EntryReportDO } from './db/types/EntryReportDO'
 
 // Custom APIs for renderer
 const api = {
@@ -13,6 +14,12 @@ const api = {
   },
   removeEntry: (id: string): Promise<void> => {
     return ipcRenderer.invoke('db.entry.removeById', id)
+  },
+  removeTimeLogsByIds: (ids: string[]): Promise<void> => {
+    return ipcRenderer.invoke('db.entry.removeTimeLogsByIds', ids)
+  },
+  getEntryReport: (id: string): Promise<EntryReportDO> => {
+    return ipcRenderer.invoke('db.entry.getEntryReport', id)
   }
 }
 

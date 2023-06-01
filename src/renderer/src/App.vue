@@ -127,29 +127,8 @@ const getAllEntries = async () => {
       })
 
       entries.value = resp
-
-      prepareReport()
     }
   )
-}
-
-const monthlyReport = ref<any[]>([])
-const prepareReport = async () => {
-  const entries = await fetchEntries({
-    timeRange: [
-      dayjs(selectedDate.value).startOf('months').toDate(),
-      dayjs(selectedDate.value).endOf('months').toDate()
-    ]
-  })
-
-  monthlyReport.value = entries
-    .filter((e) => e.timelogs && e.timelogs.length > 0)
-    .flatMap((e) => {
-      if (!e.timelogs) {
-        return { label: e.label }
-      }
-      return { label: e.label, sum: e.timelogs.reduce((val1, val2) => val1 + val2.duration, 0) }
-    })
 }
 
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
@@ -217,16 +196,12 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
           <el-table-column prop="sum" label="SUM" />
 
           <el-table-column v-slot="scope" label="Actions">
-            <el-icon color="red" class="clickable" @click="() => removeEntry(scope.row.id)"><iconoir-trash /></el-icon>
+            <el-icon color="red" class="clickable" @click="() => removeTimeLogs(scope.row)"><iconoir-trash /></el-icon>
           </el-table-column>
         </el-table>
       </el-card>
-      <el-card header="Report">
-        <el-table :data="monthlyReport">
-          <el-table-column label="Entry" prop="label" />
-          <el-table-column label="Monthly Sum" prop="sum" />
-        </el-table>
-      </el-card>
+
+      <entry-report :entry="selectedRow" />
     </el-main>
   </el-container>
 </template>
@@ -241,9 +216,5 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 .el-table__footer .cell {
   //text-align: center !important;
   font-weight: bold;
-}
-
-.clickable {
-  cursor: pointer;
 }
 </style>
