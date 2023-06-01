@@ -5,11 +5,11 @@ import { EntryListQuery } from './db/types/EntryListQuery'
 import { EntryReportDO } from './db/types/EntryReportDO'
 
 // Custom APIs for renderer
-const api = {
-  insertEntry: (entries: Entry[]): Promise<void> => {
+export const api = {
+  insertEntry: (entries: EntryDO[]): Promise<void> => {
     return ipcRenderer.invoke('db.entry.insert', entries)
   },
-  getEntries: (query: EntryListQuery): Promise<Entry[]> => {
+  getEntries: (query?: EntryListQuery): Promise<Entry[]> => {
     return ipcRenderer.invoke('db.entry.getEntries', query)
   },
   removeEntry: (id: string): Promise<void> => {

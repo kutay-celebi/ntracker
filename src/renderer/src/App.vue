@@ -31,6 +31,7 @@ const columns = computed(() => {
 onMounted(async () => {
   await getAllEntries()
 })
+
 const addEntry = async () => {
   const timelogs: EntryTimelogDO[] = []
   entry.value.label = searchEntry.value
@@ -46,7 +47,7 @@ const addEntry = async () => {
 }
 
 const saveAll = async () => {
-  await window.api.insertEntry(JSON.stringify(entries.value)).then(async () => {
+  await window.api.insertEntry(toRaw(entries.value)).then(async () => {
     isUnsavedChange.value = false
     await getAllEntries()
     searchEntry.value = ''
@@ -170,11 +171,9 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 
       <el-card class="my-2">
         <el-button :type="isUnsavedChange ? `warning` : `success`" @click="saveAll">
-          <iconoir-save-floppy-disk /> <span v-if="isUnsavedChange" class="ml-1">There are unsaved changes!</span>
+          <iconoir-save-floppy-disk /> <span v-if="isUnsavedChange">There are unsaved changes!</span>
         </el-button>
-        <div class="float-right">
-          <el-date-picker v-model="selectedDate" @change="getAllEntries"></el-date-picker>
-        </div>
+        <el-date-picker v-model="selectedDate" class="float-right" @change="getAllEntries"></el-date-picker>
         <el-table
           v-model:data="entries"
           width="100%"

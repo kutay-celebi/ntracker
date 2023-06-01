@@ -7,8 +7,7 @@ import { InferAttributes, Op, WhereOptions } from 'sequelize'
 import dayjs from 'dayjs'
 
 ipcMain.handle('db.entry.insert', async (_event, args) => {
-  const entries: EntryDO[] = JSON.parse(args)
-  for (const obj of entries) {
+  for (const obj of args) {
     const saved = await Entry.upsert({ id: obj.id, label: obj.label })
 
     if (obj.timelogs) {
@@ -16,7 +15,7 @@ ipcMain.handle('db.entry.insert', async (_event, args) => {
         await EntryTimelog.upsert({
           id: timelog.id,
           date: timelog.date,
-          duration: timelog.duration,
+          duration: timelog.duration ? timelog.duration : 0,
           entry_id: saved[0].id
         })
       }
@@ -46,7 +45,7 @@ ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
   })
 
   const mappedEntries: EntryDO[] = entries.map((e) => e.get({ plain: true }))
-  return mappedEntries
+  return Promise.resolve(mappedEntries)
 })
 
 ipcMain.handle('db.entry.removeById', async (_event, args: string) => {
