@@ -1,0 +1,4 @@
+provider: generic
+# todo @kcelebi enrich
+url: https://todo
+updaterCacheDirName: time-tracker-updater
