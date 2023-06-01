@@ -23,6 +23,9 @@ ipcMain.handle('db.entry.insert', async (_event, args) => {
     }
   }
 })
+ipcMain.handle('db.entry.removeTimeLogsByIds', async (_event, args: string[]) => {
+  await EntryTimelog.destroy({ where: { id: { [Op.in]: args } } })
+})
 
 ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
   const where: WhereOptions<InferAttributes<Entry, { omit: never }>> = {}

@@ -83,10 +83,17 @@ const getSumOfColumn = ({ columns: cols, data }) => {
   return sums
 }
 
-const removeEntry = async (id: string) => {
-  await window.api.removeEntry(id).then(() => {
-    getAllEntries()
-  })
+const removeTimeLogs = async (entry: EntryDO) => {
+  if (!entry.timelogs) {
+    return
+  }
+
+  const ids = entry.timelogs.map((tl) => tl.id)
+  if (ids) {
+    await window.api.removeTimeLogsByIds(ids as string[]).then(() => {
+      getAllEntries()
+    })
+  }
 }
 
 const selectRow = (val: EntryDO) => {
