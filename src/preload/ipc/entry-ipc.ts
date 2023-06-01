@@ -59,17 +59,17 @@ ipcMain.handle('db.entry.removeById', async (_event, args: string) => {
 
 ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {
   const response = await Entry.findByPk(args, { include: [{ model: EntryTimelog, as: 'timelogs' }] })
-  if (!response) {
+  if (!response || !response.timelogs) {
     return Promise.resolve()
   }
 
   const report: EntryReportDO = { all: { sum: 0 }, monthly: [] }
-  response.timelogs?.forEach((tl) => {
+  response.timelogs.forEach((tl) => {
     const item = report.monthly.find((mr) => mr.date === dayjs(tl.date).format('YYYY-MM'))
     if (item) {
       item.sum += tl.duration
     } else {
-      report.monthly.push({ date: dayjs().format('YYYY-MM'), sum: tl.duration })
+      report.monthly.push({ date: dayjs(tl.date).format('YYYY-MM'), sum: tl.duration })
     }
 
     report.all.sum += tl.duration
