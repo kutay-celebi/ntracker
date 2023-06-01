@@ -3,6 +3,7 @@ import { Entry, EntryDO } from '../db/types/Entry'
 import { EntryListQuery } from '../db/types/EntryListQuery'
 import { EntryTimelog } from '../db/types/EntryTimelog'
 import { InferAttributes, Op, WhereOptions } from 'sequelize'
+import dayjs from 'dayjs'
 
 ipcMain.handle('db.entry.insert', async (_event, args) => {
   const entries: EntryDO[] = JSON.parse(args)

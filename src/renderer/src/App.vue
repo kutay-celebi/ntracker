@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { dayjs } from 'element-plus'
+import { computed, onMounted, ref, toRaw } from 'vue'
 import { EntryDO } from '../../preload/db/types/Entry'
 import { EntryTimelogDO } from '../../preload/db/types/EntryTimelog'
 import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
 import Timer from '@renderer/components/Timer.vue'
 import { EntryListQuery } from '../../preload/db/types/EntryListQuery'
+import dayjs from 'dayjs'
 import EntryReport from '@renderer/components/EntryReport.vue'
 
 const entry = ref<EntryDO>({ label: '' })

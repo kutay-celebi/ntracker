@@ -22,14 +22,13 @@
   "dependencies": {
     "@electron-toolkit/preload": "^1.0.3",
     "@electron-toolkit/utils": "^1.0.2",
+    "dayjs": "^1.11.7",
     "electron-updater": "^5.3.0",
     "element-plus": "^2.3.5",
-    "knex": "^2.4.2",
     "sequelize": "^6.31.1",
     "sqlite3": "^5.1.6",
     "vue-router": "^4.2.2",
-    "vue-timer-hook": "^1.0.84",
-    "vuetify": "^3.3.2"
+    "vue-timer-hook": "^1.0.84"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
