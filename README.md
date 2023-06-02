@@ -1,34 +1,46 @@
-# time-tracker
+# NTracker
 
-An Electron application with Vue and TypeScript
+<img src="./docs/ss.png" align="center"/>
 
-## Recommended IDE Setup
+## Introduction
+You can easily track your work on a time basis with NTracker.
+You can manage your work more easily and report your records with less difficulty.
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Built With
 
-## Project Setup
 
-### Install
+## 🚀Features
 
-```bash
-$ npm install
+TODO
+
+## 🖥️ Download & Install
+
+TODO
+
+## 🚧 Roadmap
+
+## 🧑‍💻 Running Development
+
+Local development requires at least Node v16 installed.
+
+Clone repo
+
+```shell
+clone git https://github.com/kutay-celebi/ntracker
 ```
 
-### Development
+Install dependencies
 
-```bash
-$ npm run dev
+```shell
+pnpm install
 ```
 
-### Build
+Run with dev env.
 
-```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+```shell
+pnpm dev
 ```
+
+## ✍️ Contributing
+
+TODO
