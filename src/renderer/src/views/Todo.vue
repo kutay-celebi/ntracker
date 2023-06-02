@@ -1,29 +1,76 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { TodoDO } from '../../../preload/db/types/Todo'
+import { onMounted, ref, toRaw, watch } from 'vue'
+import { TodoDO, TodoListQuery } from '../../../preload/db/types/Todo'
 import List from '@renderer/components/List.vue'
 import ListItem from '@renderer/components/ListItem.vue'
 import IconoirCircle from '~icons/iconoir/circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
+import dayjs from 'dayjs'
+import { useUtil } from '@renderer/compositions/helper'
+
+const { formatDateTime } = useUtil()
 
 const activeTab = ref('today')
+const selectedTodo = ref<TodoDO>()
 const todos = ref<TodoDO[]>([])
-
-onMounted(async () => {
-  await window.api.getTodods().then((resp) => (todos.value = resp))
+const todoQuery = ref<TodoListQuery>({
+  timeRange: [dayjs().startOf('days').toDate(), dayjs().endOf('days').toDate()],
+  sorts: [
+    { field: 'completed', direction: 'asc' },
+    { field: 'dueDate', direction: 'asc' }
+  ]
 })
 
-const toggleTodo = (todo: TodoDO) => {
+watch(
+  () => activeTab.value,
+  (val) => {
+    todoQuery.value.completed = undefined
+    if (val === 'completed') {
+      todoQuery.value.completed = true
+    }
+    if (val === 'today') {
+      todoQuery.value.timeRange = [dayjs().startOf('days').toDate(), dayjs().endOf('days').toDate()]
+    }
+    if (val === 'all') {
+      todoQuery.value.completed = false
+      todoQuery.value.timeRange = undefined
+    }
+
+    fetchTodos()
+  }
+)
+
+onMounted(async () => {
+  await fetchTodos()
+})
+
+const fetchTodos = async () => {
+  await window.api.getTodods(toRaw(todoQuery.value)).then((resp) => (todos.value = resp))
+}
+
+const toggleTodo = async (todo: TodoDO) => {
   todo.completed = !todo.completed
+  await window.api.saveTodo(toRaw(todo)).then(() => fetchTodos())
+}
+
+const selectTodo = (todo: TodoDO) => {
+  if (todo === selectedTodo.value) {
+    selectedTodo.value = undefined
+    return
+  }
+
+  selectedTodo.value = todo
 }
 </script>
 
 <template>
   <el-card class="my-2">
     <el-tabs v-model="activeTab" mode="horizontal" class="my-2">
-      <el-tab-pane label="Today" name="today">
-        <list data=""> </list>
-        <list>
+      <el-tab-pane label="Today" name="today" />
+      <el-tab-pane label="All Uncompleted" name="all" />
+      <el-tab-pane label="Completed" name="completed" />
+      <el-container>
+        <list class="w-100 split-panel">
           <list-item v-for="(todo, idx) in todos" :key="idx" :class="[{ completed: todo.completed }, 'todo-item']">
             <template #prefix>
               <transition name="slide">
@@ -31,12 +78,19 @@ const toggleTodo = (todo: TodoDO) => {
                 <iconoir-check-circle v-else class="todo-icon icon-success clickable" @click="() => toggleTodo(todo)" />
               </transition>
             </template>
-            <div :class="[{ 'is-completed': todo.completed }, 'strike', 'mx-2']">{{ todo.label }}</div>
+            <div :class="[{ 'is-completed': todo.completed }, 'strike', 'mx-2']" @click="() => selectTodo(todo)">
+              {{ todo.label }}
+            </div>
           </list-item>
         </list>
-      </el-tab-pane>
-      <el-tab-pane label="Completed" name="completed">Completed</el-tab-pane>
-      <el-tab-pane label="All" name="all">All Todo</el-tab-pane>
+        <el-card :class="['w-0', { 'w-100': !!selectedTodo }, 'split-panel']" shadow="0">
+          <el-descriptions v-if="selectedTodo" :title="selectedTodo.label">
+            <el-descriptions-item label="Due date">
+              {{ formatDateTime(selectedTodo.dueDate) }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-card>
+      </el-container>
     </el-tabs>
   </el-card>
 </template>
@@ -86,5 +140,9 @@ const toggleTodo = (todo: TodoDO) => {
 
 .slide-leave-active {
   position: absolute;
+}
+
+.split-panel {
+  transition: all 0.3s ease;
 }
 </style>
