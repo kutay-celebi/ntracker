@@ -18,13 +18,11 @@ import IconoirAlarm from '~icons/iconoir/alarm'
     <el-container>
       <el-main>
         <router-view v-slot="{ Component, route }">
-          <!--          <template #default="component">-->
-          <transition name="slide">
+          <transition name="falde">
             <div :key="route.path">
               <component :is="Component" />
             </div>
           </transition>
-          <!--          </template>-->
         </router-view>
       </el-main>
     </el-container>
@@ -51,20 +49,20 @@ import IconoirAlarm from '~icons/iconoir/alarm'
   padding: 20px 0;
 }
 
-.slide-enter-active,
-.slide-leave-active {
+.fade-enter-active,
+.fade--leave-active {
   transition: all 0.3s ease;
 }
 
-.slide-leave-from,
-.slide-enter-to {
+.fade--leave-from,
+.fade--enter-to {
   opacity: 1;
   position: relative;
   z-index: 1;
 }
 
-.slide-leave-to,
-.slide-enter-from {
+.fade--leave-to,
+.fade--enter-from {
   opacity: 0;
   position: absolute;
   z-index: 0;
