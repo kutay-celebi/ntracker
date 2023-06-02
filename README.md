@@ -1,7 +1,8 @@
 # NTracker
 
 <div align="center">
-  <img src="./docs/ss.png" align="center" width="800px"/>
+  <img src="./docs/ss1.png" align="center" width="400px"/>
+  <img src="./docs/ss2.png" align="center" width="400px"/>
 </div>
 
 ## Introduction
