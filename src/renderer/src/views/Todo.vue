@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, toRaw, watch } from 'vue'
+import { nextTick, onMounted, ref, toRaw, watch } from 'vue'
 import { TodoDO, TodoListQuery } from '../../../preload/db/types/Todo'
 import List from '@renderer/components/List.vue'
 import ListItem from '@renderer/components/ListItem.vue'
@@ -53,7 +53,7 @@ const toggleTodo = async (todo: TodoDO) => {
   await window.api.saveTodo(toRaw(todo)).then(() => fetchTodos())
 }
 
-const selectTodo = (todo: TodoDO) => {
+const selectTodo = async (todo: TodoDO) => {
   if (todo === selectedTodo.value) {
     selectedTodo.value = undefined
     return
@@ -83,7 +83,11 @@ const selectTodo = (todo: TodoDO) => {
             </div>
           </list-item>
         </list>
-        <el-card :class="['w-0', { 'w-100': !!selectedTodo }, 'split-panel']" shadow="0">
+        <el-card
+          :class="['w-0', { active: !!selectedTodo }, { deactive: !selectedTodo }, 'split-panel']"
+          shadow="0"
+          style="overflow: hidden"
+        >
           <el-descriptions v-if="selectedTodo" :title="selectedTodo.label">
             <el-descriptions-item label="Due date">
               {{ formatDateTime(selectedTodo.dueDate) }}
@@ -144,5 +148,15 @@ const selectTodo = (todo: TodoDO) => {
 
 .split-panel {
   transition: all 0.3s ease;
+}
+
+.split-panel.deactive {
+  opacity: 0;
+  width: 0;
+}
+
+.split-panel.active {
+  opacity: 1;
+  width: 100%;
 }
 </style>
