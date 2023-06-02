@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { Entry, EntryDO } from './db/types/Entry'
 import { EntryListQuery } from './db/types/EntryListQuery'
 import { EntryReportDO } from './db/types/EntryReportDO'
+import { TodoDO } from './db/types/Todo'
 
 // Custom APIs for renderer
 export const api = {
@@ -20,6 +21,9 @@ export const api = {
   },
   getEntryReport: (id: string): Promise<EntryReportDO> => {
     return ipcRenderer.invoke('db.entry.getEntryReport', id)
+  },
+  getTodods: (): Promise<TodoDO[]> => {
+    return ipcRenderer.invoke('db.todo.getTodos')
   }
 }
 
