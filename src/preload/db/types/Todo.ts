@@ -1,4 +1,5 @@
 import { BaseEntity } from './BaseEntity'
+import { Sort } from './Sort'
 
 export class Todo extends BaseEntity<Todo> {
   declare label: string
@@ -10,4 +11,10 @@ export interface TodoDO {
   label: string
   dueDate: Date
   completed: boolean
+}
+
+export interface TodoListQuery {
+  completed?: boolean
+  sorts?: Sort[]
+  timeRange?: Date[]
 }
