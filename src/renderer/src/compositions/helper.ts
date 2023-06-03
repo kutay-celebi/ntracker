@@ -5,6 +5,6 @@ export interface Util {
 }
 export const useUtil = (): Util => {
   return {
-    formatDateTime: (date: Date): string => dayjs(date).format('YYYY-MM-DD HH:mm')
+    formatDateTime: (date: Date): string => (date ? dayjs(date).format('YYYY-MM-DD HH:mm') : '')
   }
 }
