@@ -17,13 +17,12 @@ ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
       [Op.or]: [
         {
           dueDate: {
-            [Op.gte]: args.timeRange[0],
-            [Op.lte]: args.timeRange[1]
+            [Op.gte]: args.timeRange[0]
           }
         },
         {
           dueDate: {
-            [Op.is]: undefined
+            [Op.lte]: args.timeRange[1]
           }
         }
       ]
@@ -46,5 +45,5 @@ ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
 })
 
 ipcMain.handle('db.todo.saveTodo', async (_event, args: TodoDO) => {
-  return await Todo.upsert(args)
+  return await Todo.upsert({ dueDate: args.dueDate ?? args.dueDate, completed: args.completed, label: args.label })
 })
