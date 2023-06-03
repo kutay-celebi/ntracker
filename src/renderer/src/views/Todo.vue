@@ -1,41 +1,47 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, toRaw, watch } from 'vue'
+import { onMounted, ref, toRaw, watch } from 'vue'
 import { TodoDO, TodoListQuery } from '../../../preload/db/types/Todo'
 import List from '@renderer/components/List.vue'
 import ListItem from '@renderer/components/ListItem.vue'
+import IconoirAddCircle from '~icons/iconoir/add-circle'
 import IconoirCircle from '~icons/iconoir/circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import dayjs from 'dayjs'
 import { useUtil } from '@renderer/compositions/helper'
+import { Sort } from '../../../preload/db/types/Sort'
 
 const { formatDateTime } = useUtil()
 
-const activeTab = ref('today')
+const activeTab = ref('all')
 const selectedTodo = ref<TodoDO>()
 const todos = ref<TodoDO[]>([])
-const todoQuery = ref<TodoListQuery>({
-  timeRange: [dayjs().startOf('days').toDate(), dayjs().endOf('days').toDate()],
-  sorts: [
-    { field: 'completed', direction: 'asc' },
-    { field: 'dueDate', direction: 'asc' }
-  ]
-})
+const todoQuery = ref<TodoListQuery>({ completed: false })
+const todoSorts = ref<Sort[]>([
+  { field: 'completed', direction: 'asc' },
+  { field: 'dueDate', direction: 'asc' }
+])
+
+const todoToBeSaved = ref<TodoDO>({ label: '', completed: false })
 
 watch(
   () => activeTab.value,
   (val) => {
     todoQuery.value.completed = undefined
     if (val === 'completed') {
-      todoQuery.value.completed = true
+      todoQuery.value = {
+        completed: true
+      }
     }
     if (val === 'today') {
-      todoQuery.value.timeRange = [dayjs().startOf('days').toDate(), dayjs().endOf('days').toDate()]
+      todoQuery.value = {
+        timeRange: [dayjs().startOf('days').toDate(), dayjs().endOf('days').toDate()]
+      }
     }
     if (val === 'all') {
-      todoQuery.value.completed = false
-      todoQuery.value.timeRange = undefined
+      todoQuery.value = { completed: false }
     }
 
+    todoQuery.value.sorts = todoSorts.value
     fetchTodos()
   }
 )
@@ -61,6 +67,21 @@ const selectTodo = async (todo: TodoDO) => {
 
   selectedTodo.value = todo
 }
+
+const addTodo = async () => {
+  if (activeTab.value === 'today' && !todoToBeSaved.value.dueDate) {
+    todoToBeSaved.value.dueDate = dayjs().endOf('days').toDate()
+  }
+
+  window.api
+    .saveTodo(toRaw(todoToBeSaved.value))
+    .then(async () => {
+      await fetchTodos()
+    })
+    .finally(() => {
+      todoToBeSaved.value = { label: '', completed: false }
+    })
+}
 </script>
 
 <template>
@@ -82,10 +103,27 @@ const selectTodo = async (todo: TodoDO) => {
               {{ todo.label }}
             </div>
           </list-item>
+          <list-item v-if="activeTab !== 'completed'">
+            <div class="todo-form">
+              <el-input v-model="todoToBeSaved.label" size="large" placeholder="Todo" @keydown.enter="addTodo" />
+              <el-date-picker
+                v-if="activeTab === 'all'"
+                v-model="todoToBeSaved.dueDate"
+                size="large"
+                type="datetime"
+                class="todo-date-picker"
+                placeholder="Due Date"
+                clearable
+              />
+              <div class="add-todo-icon">
+                <iconoir-add-circle @click="addTodo" />
+              </div>
+            </div>
+          </list-item>
         </list>
         <el-card
           :class="['w-0', { active: !!selectedTodo }, { deactive: !selectedTodo }, 'split-panel']"
-          shadow="0"
+          shadow="never"
           style="overflow: hidden"
         >
           <el-descriptions v-if="selectedTodo" :title="selectedTodo.label">
@@ -158,5 +196,22 @@ const selectTodo = async (todo: TodoDO) => {
 .split-panel.active {
   opacity: 1;
   width: 100%;
+}
+
+.todo-form {
+  display: flex;
+  width: 100%;
+}
+
+.add-todo-icon {
+  display: flex;
+  svg {
+    align-self: center;
+  }
+  height: 40px;
+  font-size: 20px;
+  margin-left: 1rem;
+  cursor: pointer;
+  color: var(--el-color-success);
 }
 </style>
