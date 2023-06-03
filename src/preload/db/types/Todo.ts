@@ -8,6 +8,7 @@ export class Todo extends BaseEntity<Todo> {
 }
 
 export interface TodoDO {
+  id?: string
   label: string
   dueDate?: Date
   completed: boolean

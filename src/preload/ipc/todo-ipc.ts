@@ -45,5 +45,10 @@ ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
 })
 
 ipcMain.handle('db.todo.saveTodo', async (_event, args: TodoDO) => {
-  return await Todo.upsert({ dueDate: args.dueDate ?? args.dueDate, completed: args.completed, label: args.label })
+  return await Todo.upsert({
+    id: args.id ?? args.id,
+    dueDate: args.dueDate ?? args.dueDate,
+    completed: args.completed,
+    label: args.label
+  })
 })
