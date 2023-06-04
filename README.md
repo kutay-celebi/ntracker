@@ -11,8 +11,8 @@
     <img src="https://img.shields.io/github/downloads/kutay-celebi/ntracker/total?style=for-the-badge" alt="total download">
   </a>
 
-  <a href="https://github.com/kutay-celebi/ntracker/releases/tag/1.0.0">
-    <img alt="GitHub release (by tag)" src="https://img.shields.io/github/downloads/kutay-celebi/ntracker/1.0.0/total?style=for-the-badge">
+  <a href="https://github.com/kutay-celebi/ntracker/releases/latest">
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/kutay-celebi/ntracker/latest/total?style=for-the-badge">
   </a>
 </div>
 
@@ -46,10 +46,10 @@ TODO
 Download the latest version from the releases page.
 
 
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.0/ntrack-1.0.0-setup.exe)
-[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.0/ntrack-1.0.0-setup.exe)
-[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.0/ntrack-1.0.0.dmg)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.0/ntrack-1.0.0.AppImage)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1-setup.exe)
+[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1-setup.exe)
+[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1.dmg)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1.AppImage)
 
 ## 🚧 Roadmap
 
