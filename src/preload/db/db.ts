@@ -5,7 +5,6 @@ import fs from 'fs'
 import { Entry } from './types/Entry'
 import { EntryTimelog } from './types/EntryTimelog'
 import { Todo } from './types/Todo'
-import dayjs from 'dayjs'
 
 const dbFilePath = path.join(homedir(), 'timetracker', 'storage.sqlite3')
 
@@ -93,19 +92,8 @@ export const initializeDB = async (): Promise<void> => {
     }
   )
 
-  await Entry.sync({ force: true })
-  await EntryTimelog.sync({ force: true })
-  await Todo.sync({ force: true })
-
-  await Todo.create({
-    label: 'sample todo 2',
-    dueDate: dayjs().add(1, 'days').toDate(),
-    completed: true
-  })
-  await Todo.create({
-    label: 'sample todo 1',
-    dueDate: dayjs().add(1, 'days').toDate(),
-    completed: false
-  })
+  await Entry.sync()
+  await EntryTimelog.sync()
+  await Todo.sync()
 }
 export default db

@@ -77,7 +77,7 @@ import IconoirAlarm from '~icons/iconoir/alarm'
   display: flex;
   justify-content: center;
   img {
-    width: 48px;
+    width: 28px;
   }
 }
 
