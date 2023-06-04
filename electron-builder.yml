@@ -1,5 +1,5 @@
 appId: tr.com.nekasoft
-productName: NTracker
+productName: NTrack
 directories:
   buildResources: build
 files:
@@ -46,4 +46,4 @@ npmRebuild: false
 publish:
   - provider: github
     owner: kutay-celebi
-    repo: ntracker-private
+    repo: ntracker

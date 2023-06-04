@@ -1,6 +1,6 @@
 {
-  "name": "ntracker",
-  "productName": "NTracker",
+  "name": "ntrack",
+  "productName": "NTrack",
   "version": "1.0.0",
   "description": "A desktop app where you can easily keep track of your time-based tasks. ",
   "main": "./out/main/index.js",

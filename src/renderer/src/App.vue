@@ -7,6 +7,10 @@ import IconoirAlarm from '~icons/iconoir/alarm'
   <el-container>
     <el-aside width="65px" class="sidebar my2">
       <el-menu mode="vertical" class="my-2 side-menu" collapse router :default-active="$route.path">
+        <el-menu-item class="menu-logo">
+          <img src="./assets/icon.png" />
+        </el-menu-item>
+        <el-divider direction="horizontal" class="logo-divider" />
         <el-menu-item index="/timesheet">
           <iconoir-alarm />
         </el-menu-item>
@@ -66,5 +70,18 @@ import IconoirAlarm from '~icons/iconoir/alarm'
   opacity: 0;
   position: absolute;
   z-index: 0;
+}
+
+.menu-logo {
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  img {
+    width: 48px;
+  }
+}
+
+.logo-divider {
+  margin: 0;
 }
 </style>

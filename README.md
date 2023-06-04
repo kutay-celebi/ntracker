@@ -1,13 +1,17 @@
-# NTracker
+<div align="center">
+  <h1>NTrack</h1>
+  <img src="./docs/banner.png" align="center" width='400px'/>
+</div>
 
+## Introduction
+You can easily track your work on a time basis with NTrack.
+You can manage your work more easily and report your records with less difficulty.
+
+## Screenshots
 <div align="center">
   <img src="./docs/ss1.png" align="center" width="400px"/>
   <img src="./docs/ss2.png" align="center" width="400px"/>
 </div>
-
-## Introduction
-You can easily track your work on a time basis with NTracker.
-You can manage your work more easily and report your records with less difficulty.
 
 ## Built With
 ![Electron.js](https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white)
