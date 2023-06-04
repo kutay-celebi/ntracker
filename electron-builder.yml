@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: Time Tracker
+appId: tr.com.nekasoft
+productName: NTracker
 directories:
   buildResources: build
 files:
@@ -13,7 +13,13 @@ asarUnpack:
   - resources/**
 afterSign: build/notarize.js
 win:
-  executableName: time-tracker
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -31,14 +37,13 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: https://github.com/kutay-celebi/ntracker
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-# todo @kcelebi
-#publish:
-#  provider: github
-#  url: https://example.com/auto-updates
+publish:
+  - provider: github
+    owner: kutay-celebi
+    repo: ntracker-private
