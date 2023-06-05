@@ -27,7 +27,7 @@ ipcMain.handle('db.entry.removeTimeLogsByIds', async (_event, args: string[]) =>
 })
 
 ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
-  const where: WhereOptions<InferAttributes<Entry, { omit: never }>> = {}
+  const where: WhereOptions<InferAttributes<Entry>> = {}
 
   if (args.timeRange) {
     where['$timelogs.date$'] = {

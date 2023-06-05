@@ -3,7 +3,7 @@ import { Todo, TodoDO, TodoListQuery } from '../db/types/Todo'
 import { InferAttributes, Op, Order, WhereOptions } from 'sequelize'
 
 ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
-  let where: WhereOptions<InferAttributes<Todo, { omit: never }>> = {}
+  let where: WhereOptions<InferAttributes<Todo>> = {}
 
   if (args && args.completed !== undefined) {
     where.completed = {
