@@ -22,13 +22,8 @@ const onChangeSwitch = (key, val) => {
 
 <template>
   <el-card>
-    <el-form v-if="settings.timesheet" label-position="left">
-      <el-form-item
-        v-for="(_val, key, idx) in settings.timesheet"
-        :key="idx"
-        :label="getHumanReadable(key)"
-        label-width="200"
-      >
+    <el-form v-if="settings.timesheet" label-position="top">
+      <el-form-item v-for="(_val, key, idx) in settings.timesheet" :key="idx" :label="getHumanReadable(key)">
         <el-switch v-model="settings.timesheet[key]" @change="() => onChangeSwitch('timesheet', settings.timesheet)" />
       </el-form-item>
     </el-form>
