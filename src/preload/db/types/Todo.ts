@@ -1,4 +1,4 @@
-import { BaseEntity } from './BaseEntity'
+import { BaseDO, BaseEntity } from './BaseEntity'
 import { Sort } from './Sort'
 
 export class Todo extends BaseEntity<Todo> {
@@ -7,8 +7,7 @@ export class Todo extends BaseEntity<Todo> {
   declare completed: boolean
 }
 
-export interface TodoDO {
-  id?: string
+export interface TodoDO extends BaseDO {
   label: string
   dueDate?: Date
   completed: boolean

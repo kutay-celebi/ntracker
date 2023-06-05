@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import IconoirAlarm from '~icons/iconoir/alarm'
+import IconoirSettings from '~icons/iconoir/settings'
 </script>
 
 <template>
@@ -16,6 +17,9 @@ import IconoirAlarm from '~icons/iconoir/alarm'
         </el-menu-item>
         <el-menu-item index="/todo">
           <iconoir-check-circle />
+        </el-menu-item>
+        <el-menu-item index="/settings">
+          <iconoir-settings />
         </el-menu-item>
       </el-menu>
     </el-aside>

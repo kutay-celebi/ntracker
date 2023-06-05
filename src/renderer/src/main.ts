@@ -29,6 +29,10 @@ const router = createRouter({
         {
           path: '/todo',
           component: Todo
+        },
+        {
+          path: '/settings',
+          component: UserSettings
         }
       ]
     }
