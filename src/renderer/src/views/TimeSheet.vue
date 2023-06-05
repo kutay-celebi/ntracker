@@ -33,7 +33,6 @@ const columns = computed(() => {
 
 onMounted(async () => {
   await getAllEntries()
-  console.log(settingsStore.timesheet)
 })
 
 const addEntry = async () => {
