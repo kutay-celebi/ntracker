@@ -8,7 +8,7 @@ const getHumanReadable = (key: string): string => {
     case 'denseTable':
       return 'Show the Entry table dense.'
     case 'forceLabel':
-      return 'Force entry input label.'
+      return 'Force to select entry when exact match'
     case 'onlyWeekDays':
       return 'Show only week days'
   }

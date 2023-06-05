@@ -17,6 +17,7 @@ const isUnsavedChange = ref(false)
 const selectedDate = ref<Date>(new Date())
 
 const searchEntry = ref('')
+
 const entries = ref<EntryDO[]>([])
 
 const selectedRow = ref<EntryDO>()
@@ -121,6 +122,14 @@ const selectEntry = async (item: EntryDO) => {
 
 const queryAutoComplete = async (text: string, cb: any) => {
   await fetchEntries({ label: text }).then((resp) => {
+    if (settings.timesheet.forceLabel) {
+      const toBeSelected = resp.find((entry) => entry.label.toLowerCase() === text.toLowerCase())
+      if (toBeSelected) {
+        selectEntry(toBeSelected)
+      } else {
+        entry.value = { label: '' }
+      }
+    }
     cb(resp)
   })
 }
