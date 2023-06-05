@@ -39,11 +39,11 @@ You can manage your work more easily and report your records with less difficult
 
 ## 🚀Features
 
-<div>📍 You can save your daily to-do tasks.</div>
-<div>📍 You can organize your saved to-do.</div>
-<div>📍 You can track the time of your work on a daily basis. </div>
-<div>📍 You can start a timer for a task that you are busy with and record the time elapsed.</div>
-<div>📍 You can customize the application as you like.</div>
+<div>📍 Save your daily to-do tasks.</div>
+<div>📍 Organize your saved to-do.</div>
+<div>📍 Track the time of your work on a daily basis. </div>
+<div>📍 Start a timer for a task that you are busy with and record the time elapsed.</div>
+<div>📍 Customize the application as you like.</div>
 
 
 ## 🖥️ Download & Install
