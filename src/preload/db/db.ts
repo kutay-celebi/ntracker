@@ -5,6 +5,7 @@ import fs from 'fs'
 import { Entry } from './types/Entry'
 import { EntryTimelog } from './types/EntryTimelog'
 import { Todo } from './types/Todo'
+import log from 'electron-log'
 
 const dbFilePath = path.join(homedir(), 'timetracker', 'storage.sqlite3')
 
@@ -36,7 +37,8 @@ export const initializeDB = async (): Promise<void> => {
       },
       label: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       }
     },
     { sequelize: db, tableName: 'entry', modelName: 'entry' }
@@ -92,8 +94,8 @@ export const initializeDB = async (): Promise<void> => {
   )
 
   // initialize table
-  await Entry.sync()
-  await EntryTimelog.sync()
-  await Todo.sync()
+  await Entry.sync().catch((err) => log.error(err))
+  await EntryTimelog.sync().catch((err) => log.error(err))
+  await Todo.sync().catch((err) => log.error(err))
 }
 export default db

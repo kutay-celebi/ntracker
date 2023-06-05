@@ -10,7 +10,7 @@ import { EntryListQuery } from '../../../preload/db/types/EntryListQuery'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
 
-const settingsStore = useSettingsStore()
+const settings = useSettingsStore()
 
 const entry = ref<EntryDO>({ label: '' })
 const isUnsavedChange = ref(false)
@@ -24,7 +24,7 @@ const selectedRow = ref<EntryDO>()
 const columns = computed(() => {
   let date = dayjs(selectedDate.value).startOf('days').startOf('weeks')
   const cols: any[] = []
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < (settings.timesheet.onlyWeekDays ? 5 : 7); i++) {
     cols.push({ props: date.toDate(), label: date.format('DD - ddd') })
     date = date.add(1, 'days')
   }
@@ -36,6 +36,10 @@ onMounted(async () => {
 })
 
 const addEntry = async () => {
+  if (entries.value.some((e) => e.id === entry.value.id || searchEntry.value === e.label)) {
+    return
+  }
+
   const timelogs: EntryTimelogDO[] = []
   entry.value.label = searchEntry.value
 
@@ -50,12 +54,15 @@ const addEntry = async () => {
 }
 
 const saveAll = async () => {
-  await window.api.insertEntry(toRaw(entries.value)).then(async () => {
-    isUnsavedChange.value = false
-    await getAllEntries()
-    searchEntry.value = ''
-    entry.value = { label: '' }
-  })
+  await window.api
+    .insertEntry(toRaw(entries.value))
+    .then(async () => {
+      isUnsavedChange.value = false
+      await getAllEntries()
+      searchEntry.value = ''
+      entry.value = { label: '' }
+    })
+    .catch((err) => console.log(err))
 }
 
 const getSumOfColumn = ({ columns: cols, data }) => {
@@ -149,10 +156,10 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 
 <template>
   <el-card class="my-2">
-    <el-form label-position="left" label-width="160px">
+    <el-form label-position="left" label-width="160px" @submit="addEntry">
       <el-form-item label="Label" required>
         <el-autocomplete
-          v-model="searchEntry"
+          v-model.trim="searchEntry"
           :fetch-suggestions="queryAutoComplete"
           fit-input-width
           value-key="label"
@@ -183,10 +190,10 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       :summary-method="getSumOfColumn"
       size="large"
       highlight-current-row
-      :class="[{ 'dense-table': settingsStore.timesheet.denseTable }]"
+      :class="[{ 'dense-table': settings.timesheet.denseTable }]"
       @current-change="selectRow"
     >
-      <el-table-column label="Entry" prop="label" />
+      <el-table-column label="Entry" prop="label" min-width="100px" />
 
       <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label">
         <template #default="scope">
@@ -202,9 +209,9 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="sum" label="SUM" />
+      <el-table-column prop="sum" label="SUM" width="70px" />
 
-      <el-table-column v-slot="scope" label="Actions">
+      <el-table-column v-slot="scope" label="Actions" width="90px">
         <el-icon color="red" class="clickable" @click="() => removeTimeLogs(scope.row)">
           <iconoir-trash />
         </el-icon>
