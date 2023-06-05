@@ -1,0 +1,24 @@
+{
+  "timesheet": {
+    "type": "object",
+    "properties": {
+      "denseTable": {
+        "description": "Display timesheet table more compact",
+        "type": "boolean"
+      },
+      "forceLabel": {
+        "description": "Automatically select exact match in label search.",
+        "type": "boolean"
+      },
+      "onlyWeekDays": {
+        "description": "Automatically select exact match in label search.",
+        "type": "boolean"
+      }
+    },
+    "default": {
+      "denseTable": false,
+      "forceLabel": true,
+      "onlyWeekDays": false
+    }
+  }
+}
