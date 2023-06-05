@@ -39,7 +39,6 @@ You can manage your work more easily and report your records with less difficult
 
 ## 🚀Features
 
-### Todo
 <div>📍 You can save your daily to-do tasks.</div>
 <div>📍 You can organize your saved to-do.</div>
 <div>📍 You can track the time of your work on a daily basis. </div>
