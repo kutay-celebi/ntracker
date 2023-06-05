@@ -8,6 +8,9 @@ import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
 import { EntryListQuery } from '../../../preload/db/types/EntryListQuery'
 import dayjs from 'dayjs'
+import { useSettingsStore } from '@renderer/store/settigs'
+
+const settingsStore = useSettingsStore()
 
 const entry = ref<EntryDO>({ label: '' })
 const isUnsavedChange = ref(false)
@@ -30,6 +33,7 @@ const columns = computed(() => {
 
 onMounted(async () => {
   await getAllEntries()
+  console.log(settingsStore.timesheet)
 })
 
 const addEntry = async () => {
@@ -180,6 +184,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       :summary-method="getSumOfColumn"
       size="large"
       highlight-current-row
+      :class="[{ 'dense-table': settingsStore.timesheet.denseTable }]"
       @current-change="selectRow"
     >
       <el-table-column label="Entry" prop="label" />
