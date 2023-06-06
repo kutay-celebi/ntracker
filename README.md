@@ -39,7 +39,12 @@ You can manage your work more easily and report your records with less difficult
 
 ## 🚀Features
 
-TODO
+<div>📍 Save your daily to-do tasks.</div>
+<div>📍 Organize your saved to-do.</div>
+<div>📍 Track the time of your work on a daily basis. </div>
+<div>📍 Start a timer for a task that you are busy with and record the time elapsed.</div>
+<div>📍 Customize the application as you like.</div>
+
 
 ## 🖥️ Download & Install
 
@@ -51,9 +56,6 @@ Download the latest version from the releases page.
 [![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1.dmg)
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.0.1/ntrack-1.0.1.AppImage)
 
-## 🚧 Roadmap
-
-TODO
 
 ## 🧑‍💻 Running Development
 

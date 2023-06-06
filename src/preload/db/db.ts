@@ -5,7 +5,7 @@ import fs from 'fs'
 import { Entry } from './types/Entry'
 import { EntryTimelog } from './types/EntryTimelog'
 import { Todo } from './types/Todo'
-import { Setting, UserSettings } from './types/UserSettings'
+import log from 'electron-log'
 
 const dbFilePath = path.join(homedir(), 'timetracker', 'storage.sqlite3')
 
@@ -37,7 +37,8 @@ export const initializeDB = async (): Promise<void> => {
       },
       label: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       }
     },
     { sequelize: db, tableName: 'entry', modelName: 'entry' }
@@ -92,61 +93,9 @@ export const initializeDB = async (): Promise<void> => {
     }
   )
 
-  UserSettings.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-      },
-      setting: {
-        type: DataTypes.ENUM(...Object.values(Setting)),
-        allowNull: false,
-        unique: true
-      },
-      settingValue: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      settingType: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
-    },
-    {
-      sequelize: db,
-      tableName: 'user_settings',
-      freezeTableName: true,
-      modelName: 'user_settings',
-      underscored: true
-    }
-  )
-
   // initialize table
-  await Entry.sync()
-  await EntryTimelog.sync()
-  await Todo.sync()
-  await UserSettings.sync({ alter: true })
-
-  // initialize data
-  await initializeDefaultSettings()
+  await Entry.sync().catch((err) => log.error(err))
+  await EntryTimelog.sync().catch((err) => log.error(err))
+  await Todo.sync().catch((err) => log.error(err))
 }
-
-const initializeDefaultSettings = async (): Promise<void> => {
-  await UserSettings.findOrCreate({
-    where: { setting: Setting.DENSE_TABLE },
-    defaults: { setting: Setting.DENSE_TABLE, settingValue: 'false', settingType: 'boolean' }
-  }).catch((err) => console.log(err))
-
-  await UserSettings.findOrCreate({
-    where: { setting: Setting.FORCE_LABEL },
-    defaults: { setting: Setting.FORCE_LABEL, settingValue: 'true', settingType: 'boolean' }
-  })
-
-  await UserSettings.findOrCreate({
-    where: { setting: Setting.ONLY_WEEK_DAYS },
-    defaults: { setting: Setting.ONLY_WEEK_DAYS, settingValue: 'true', settingType: 'boolean' }
-  })
-}
-
 export default db

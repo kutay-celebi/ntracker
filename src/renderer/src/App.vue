@@ -2,6 +2,14 @@
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import IconoirAlarm from '~icons/iconoir/alarm'
 import IconoirSettings from '~icons/iconoir/settings'
+import { onBeforeMount } from 'vue'
+import { useSettingsStore } from '@renderer/store/settigs'
+
+const settingsStore = useSettingsStore()
+
+onBeforeMount(async () => {
+  await settingsStore.initSettings()
+})
 </script>
 
 <template>

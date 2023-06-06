@@ -4,7 +4,6 @@ import { Entry, EntryDO } from './db/types/Entry'
 import { EntryListQuery } from './db/types/EntryListQuery'
 import { EntryReportDO } from './db/types/EntryReportDO'
 import { TodoDO, TodoListQuery } from './db/types/Todo'
-import { UserSettingsDO } from './db/types/UserSettings'
 
 // Custom APIs for renderer
 export const api = {
@@ -29,11 +28,11 @@ export const api = {
   saveTodo: (todo: TodoDO): Promise<TodoDO> => {
     return ipcRenderer.invoke('db.todo.saveTodo', todo)
   },
-  getUserSettings: (): Promise<UserSettingsDO[]> => {
-    return ipcRenderer.invoke('db.user-settings.getSettings')
+  getAllSettings: (): Promise<any> => {
+    return ipcRenderer.invoke('app.settings.getAllSettings')
   },
-  saveUserSettings: (arg: UserSettingsDO): Promise<UserSettingsDO> => {
-    return ipcRenderer.invoke('db.user-settings.save', arg)
+  saveSetting: (args: any): void => {
+    ipcRenderer.send('app.settings.setSetting', args)
   }
 }
 

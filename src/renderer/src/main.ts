@@ -8,12 +8,16 @@ import updateLocale from 'dayjs/plugin/updateLocale'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import TimeSheet from '@renderer/views/TimeSheet.vue'
 import Todo from '@renderer/views/Todo.vue'
+import { createPinia } from 'pinia'
+import AppSettings from '@renderer/views/AppSettings.vue'
 
 dayjs.extend(utc)
 dayjs.extend(updateLocale)
 dayjs.updateLocale('en', {
   weekStart: 1
 })
+
+const pinia = createPinia()
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -32,11 +36,11 @@ const router = createRouter({
         },
         {
           path: '/settings',
-          component: UserSettings
+          component: AppSettings
         }
       ]
     }
   ]
 })
 
-createApp(App).use(ElementPlus).use(router).mount('#app')
+createApp(App).use(ElementPlus).use(pinia).use(router).mount('#app')

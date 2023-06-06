@@ -3,12 +3,18 @@ import { Entry, EntryDO } from '../db/types/Entry'
 import { EntryListQuery } from '../db/types/EntryListQuery'
 import { EntryReportDO } from '../db/types/EntryReportDO'
 import { EntryTimelog } from '../db/types/EntryTimelog'
-import { InferAttributes, Op, WhereOptions } from 'sequelize'
+import { col, fn, InferAttributes, Op, where, WhereOptions } from 'sequelize'
 import dayjs from 'dayjs'
 
 ipcMain.handle('db.entry.insert', async (_event, args) => {
   for (const obj of args) {
-    const saved = await Entry.upsert({ id: obj.id, label: obj.label })
+    let entry
+    if (!obj.id) {
+      entry = await Entry.findOrCreate({
+        where: where(fn('lower', col('label')), obj.label.toLowerCase()),
+        defaults: { label: obj.label }
+      })
+    }
 
     if (obj.timelogs) {
       for (const timelog of obj.timelogs) {
@@ -16,7 +22,7 @@ ipcMain.handle('db.entry.insert', async (_event, args) => {
           id: timelog.id,
           date: timelog.date,
           duration: timelog.duration ? timelog.duration : 0,
-          entry_id: saved[0].id
+          entry_id: obj.id ? obj.id : entry[0].id
         })
       }
     }
@@ -27,7 +33,7 @@ ipcMain.handle('db.entry.removeTimeLogsByIds', async (_event, args: string[]) =>
 })
 
 ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
-  const where: WhereOptions<InferAttributes<Entry, { omit: never }>> = {}
+  const where: WhereOptions<InferAttributes<Entry>> = {}
 
   if (args.timeRange) {
     where['$timelogs.date$'] = {

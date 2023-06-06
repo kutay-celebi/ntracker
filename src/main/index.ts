@@ -5,9 +5,14 @@ import icon from '../../resources/icon.png?asset'
 import '../preload/ipc'
 import '../preload/db'
 import { initializeDB } from '../preload/db/db'
+import setupEnv from './env'
+import initializeSettings from './settings'
 
 async function createWindow(): Promise<void> {
+  const appEnv = setupEnv()
   await initializeDB()
+  initializeSettings(appEnv)
+
   const display = screen.getPrimaryDisplay()
   const size = display.size
   // Create the browser window.
