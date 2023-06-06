@@ -5,6 +5,7 @@ export interface NTrackerEnv {
   userPath: string
   appPath: string
   configPath: string
+  dbPath: string
 }
 
 const setupEnv = (): NTrackerEnv => {
@@ -12,6 +13,7 @@ const setupEnv = (): NTrackerEnv => {
   return {
     userPath: userData,
     configPath: path.join(userData, 'config'),
+    dbPath: path.join(userData),
     appPath: app.getPath('appData')
   }
 }

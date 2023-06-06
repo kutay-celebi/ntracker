@@ -10,7 +10,7 @@ import initializeSettings from './settings'
 
 async function createWindow(): Promise<void> {
   const appEnv = setupEnv()
-  await initializeDB()
+  await initializeDB(appEnv)
   initializeSettings(appEnv)
 
   const display = screen.getPrimaryDisplay()
