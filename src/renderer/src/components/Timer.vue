@@ -2,7 +2,7 @@
 import { computed, PropType, ref, watch } from 'vue'
 import { useStopwatch } from 'vue-timer-hook'
 import dayjs from 'dayjs'
-import { EntryDO } from '../../../preload/db/types/Entry'
+import { EntryDO } from '../../../main/db/types/Entry'
 
 const emits = defineEmits(['update:modelValue', 'addDuration'])
 const props = defineProps({

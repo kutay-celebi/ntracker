@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import { Todo, TodoDO, TodoListQuery } from '../db/types/Todo'
 import { InferAttributes, Op, Order, WhereOptions } from 'sequelize'
 
-ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
+ipcMain.handle('db.todo.queryTodos', async (_event, args: TodoListQuery) => {
   let where: WhereOptions<InferAttributes<Todo>> = {}
 
   if (args && args.completed !== undefined) {
@@ -44,7 +44,7 @@ ipcMain.handle('db.todo.getTodos', async (_event, args: TodoListQuery) => {
   return todos.map((todo) => todo.get({ plain: true }))
 })
 
-ipcMain.handle('db.todo.saveTodo', async (_event, args: TodoDO) => {
+ipcMain.handle('db.todo.save', async (_event, args: TodoDO) => {
   return await Todo.upsert({
     id: args.id ?? args.id,
     dueDate: args.dueDate ?? args.dueDate,

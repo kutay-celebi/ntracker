@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { EntryReportDO } from '../../../preload/db/types/EntryReportDO'
+import { EntryReportDO } from '../../../main/db/types/EntryReportDO'
 import { PropType, ref, watch } from 'vue'
-import { EntryDO } from '../../../preload/db/types/Entry'
+import { EntryDO } from '../../../main/db/types/Entry'
 
 const props = defineProps({
   entry: {

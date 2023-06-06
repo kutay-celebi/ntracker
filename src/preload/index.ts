@@ -1,32 +1,29 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { Entry, EntryDO } from './db/types/Entry'
-import { EntryListQuery } from './db/types/EntryListQuery'
-import { EntryReportDO } from './db/types/EntryReportDO'
-import { TodoDO, TodoListQuery } from './db/types/Todo'
+import { Entry, EntryDO } from '../main/db/types/Entry'
+import { EntryListQuery } from '../main/db/types/EntryListQuery'
+import { EntryReportDO } from '../main/db/types/EntryReportDO'
+import { TodoDO, TodoListQuery } from '../main/db/types/Todo'
 
 // Custom APIs for renderer
 export const api = {
-  insertEntry: (entries: EntryDO[]): Promise<void> => {
-    return ipcRenderer.invoke('db.entry.insert', entries)
+  saveEntry: (entries: EntryDO[]): Promise<void> => {
+    return ipcRenderer.invoke('db.entry.save', entries)
   },
-  getEntries: (query?: EntryListQuery): Promise<Entry[]> => {
-    return ipcRenderer.invoke('db.entry.getEntries', query)
-  },
-  removeEntry: (id: string): Promise<void> => {
-    return ipcRenderer.invoke('db.entry.removeById', id)
-  },
-  removeTimeLogsByIds: (ids: string[]): Promise<void> => {
-    return ipcRenderer.invoke('db.entry.removeTimeLogsByIds', ids)
+  queryEntries: (query?: EntryListQuery): Promise<Entry[]> => {
+    return ipcRenderer.invoke('db.entry.queryEntries', query)
   },
   getEntryReport: (id: string): Promise<EntryReportDO> => {
     return ipcRenderer.invoke('db.entry.getEntryReport', id)
   },
+  removeTimelogsByIds: (ids: string[]): Promise<void> => {
+    return ipcRenderer.invoke('db.entry-timelog.removeTimeLogsByIds', ids)
+  },
   getTodods: (query?: TodoListQuery): Promise<TodoDO[]> => {
-    return ipcRenderer.invoke('db.todo.getTodos', query)
+    return ipcRenderer.invoke('db.todo.queryTodos', query)
   },
   saveTodo: (todo: TodoDO): Promise<TodoDO> => {
-    return ipcRenderer.invoke('db.todo.saveTodo', todo)
+    return ipcRenderer.invoke('db.todo.save', todo)
   },
   getAllSettings: (): Promise<any> => {
     return ipcRenderer.invoke('app.settings.getAllSettings')

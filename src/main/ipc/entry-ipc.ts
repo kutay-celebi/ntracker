@@ -6,7 +6,7 @@ import { EntryTimelog } from '../db/types/EntryTimelog'
 import { col, fn, InferAttributes, Op, where, WhereOptions } from 'sequelize'
 import dayjs from 'dayjs'
 
-ipcMain.handle('db.entry.insert', async (_event, args) => {
+ipcMain.handle('db.entry.save', async (_event, args) => {
   for (const obj of args) {
     let entry
     if (!obj.id) {
@@ -28,11 +28,12 @@ ipcMain.handle('db.entry.insert', async (_event, args) => {
     }
   }
 })
-ipcMain.handle('db.entry.removeTimeLogsByIds', async (_event, args: string[]) => {
+
+ipcMain.handle('db.entry-timelog.removeTimeLogsByIds', async (_event, args: string[]) => {
   await EntryTimelog.destroy({ where: { id: { [Op.in]: args } } })
 })
 
-ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
+ipcMain.handle('db.entry.queryEntries', async (_event, args: EntryListQuery) => {
   const where: WhereOptions<InferAttributes<Entry>> = {}
 
   if (args.timeRange) {
@@ -52,15 +53,6 @@ ipcMain.handle('db.entry.getEntries', async (_event, args: EntryListQuery) => {
 
   const mappedEntries: EntryDO[] = entries.map((e) => e.get({ plain: true }))
   return Promise.resolve(mappedEntries)
-})
-
-ipcMain.handle('db.entry.removeById', async (_event, args: string) => {
-  await Entry.destroy({
-    cascade: true,
-    where: {
-      id: args
-    }
-  })
 })
 
 ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {

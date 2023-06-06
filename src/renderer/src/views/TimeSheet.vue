@@ -2,11 +2,11 @@
 import Timer from '@renderer/components/Timer.vue'
 import EntryReport from '@renderer/components/EntryReport.vue'
 import { computed, onMounted, ref, toRaw } from 'vue'
-import { EntryDO } from '../../../preload/db/types/Entry'
-import { EntryTimelogDO } from '../../../preload/db/types/EntryTimelog'
+import { EntryDO } from '../../../main/db/types/Entry'
+import { EntryTimelogDO } from '../../../main/db/types/EntryTimelog'
 import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
-import { EntryListQuery } from '../../../preload/db/types/EntryListQuery'
+import { EntryListQuery } from '../../../main/db/types/EntryListQuery'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
 
@@ -56,7 +56,7 @@ const addEntry = async () => {
 
 const saveAll = async () => {
   await window.api
-    .insertEntry(toRaw(entries.value))
+    .saveEntry(toRaw(entries.value))
     .then(async () => {
       isUnsavedChange.value = false
       await getAllEntries()
@@ -102,7 +102,7 @@ const removeTimeLogs = async (entry: EntryDO) => {
 
   const ids = entry.timelogs.map((tl) => tl.id)
   if (ids) {
-    await window.api.removeTimeLogsByIds(ids as string[]).then(() => {
+    await window.api.removeTimelogsByIds(ids as string[]).then(() => {
       getAllEntries()
     })
   }
@@ -159,7 +159,7 @@ const getAllEntries = async () => {
 }
 
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
-  return await window.api.getEntries(query)
+  return await window.api.queryEntries(query)
 }
 </script>
 

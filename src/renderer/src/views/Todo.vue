@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, toRaw, watch } from 'vue'
-import { TodoDO, TodoListQuery } from '../../../preload/db/types/Todo'
+import { TodoDO, TodoListQuery } from '../../../main/db/types/Todo'
 import List from '@renderer/components/List.vue'
 import ListItem from '@renderer/components/ListItem.vue'
 import IconoirAddCircle from '~icons/iconoir/add-circle'
@@ -8,7 +8,7 @@ import IconoirCircle from '~icons/iconoir/circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import dayjs from 'dayjs'
 import { useUtil } from '@renderer/compositions/helper'
-import { Sort } from '../../../preload/db/types/Sort'
+import { Sort } from '../../../main/db/types/Sort'
 
 const { formatDateTime } = useUtil()
 
