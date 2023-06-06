@@ -52,6 +52,7 @@ ipcMain.handle('db.entry.queryEntries', async (_event, args: EntryListQuery) => 
   })
 
   const mappedEntries: EntryDO[] = entries.map((e) => e.get({ plain: true }))
+
   return Promise.resolve(mappedEntries)
 })
 
