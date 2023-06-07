@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Timer from '@renderer/components/Timer.vue'
 import EntryReport from '@renderer/components/EntryReport.vue'
-import { computed, nextTick, onMounted, ref, toRaw } from 'vue'
-import { Entry, EntryDO } from '../../../main/db/types/Entry'
+import { computed, onMounted, ref, toRaw } from 'vue'
+import { EntryDO } from '../../../main/db/types/Entry'
 import { EntryTimelogDO } from '../../../main/db/types/EntryTimelog'
 import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
@@ -14,7 +14,7 @@ import IconoirPageEdit from '~icons/iconoir/page-edit'
 
 const settings = useSettingsStore()
 
-const entry = ref<EntryDO>({ label: '' })
+const entry = ref<EntryDO>({ label: '', notes: '' })
 const isUnsavedChange = ref(false)
 const selectedDate = ref<Date>(new Date())
 
@@ -192,6 +192,15 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
           </template>
         </el-autocomplete>
       </el-form-item>
+
+      <el-form-item label="Notes">
+        <el-input
+          v-model="entry.notes"
+          type="textarea"
+          resize="vertical"
+          placeholder="Markdown is available"
+        ></el-input>
+      </el-form-item>
       <el-button @click="addEntry">Add</el-button>
     </el-form>
   </el-card>
@@ -242,6 +251,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       </el-table-column>
     </el-table>
   </el-card>
+
   <entry-report :entry="selectedRow" />
   <el-dialog v-model="showDetail" width="80%" @close="onNoteSave">
     <el-card v-if="selectedRow" class="entry-notes" header="Notes" shadow="never">

@@ -68,7 +68,7 @@ ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {
     return Promise.resolve()
   }
 
-  const report: EntryReportDO = { all: { sum: 0 }, monthly: [] }
+  const report: EntryReportDO = { notes: response.notes, all: { sum: 0 }, monthly: [] }
   response.timelogs.forEach((tl) => {
     const item = report.monthly.find((mr) => mr.date === dayjs(tl.date).format('YYYY-MM'))
     if (item) {

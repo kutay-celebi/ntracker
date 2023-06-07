@@ -2,6 +2,7 @@
 import { EntryReportDO } from '../../../main/db/types/EntryReportDO'
 import { PropType, ref, watch } from 'vue'
 import { EntryDO } from '../../../main/db/types/Entry'
+import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
 
 const props = defineProps({
   entry: {
@@ -30,6 +31,9 @@ const prepareReport = async () => {
 <template>
   <el-card header="Report">
     <div v-if="entryReport">
+      <markdown-renderer :markdown="entryReport.notes" />
+
+      <h1>Total Hours:</h1>
       <el-table :data="entryReport.monthly" show-summary>
         <el-table-column label="Entry" prop="date" />
         <el-table-column label="Sum" prop="sum" />
