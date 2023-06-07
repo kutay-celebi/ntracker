@@ -79,8 +79,16 @@ app.whenReady().then(async () => {
   })
 
   createWindow()
-  await autoUpdater.checkForUpdates()
 
+  if (process.env.NODE_ENV === 'development') {
+    autoUpdater.autoInstallOnAppQuit = false
+    autoUpdater.autoDownload = false
+    autoUpdater.forceDevUpdateConfig = true
+    autoUpdater.updateConfigPath = 'dev-app-update.yml'
+  }
+
+  // todo @kcelebi currently signed app can not be updated automatically.
+  // await autoUpdater.checkForUpdates()
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -88,9 +96,6 @@ app.whenReady().then(async () => {
   })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
