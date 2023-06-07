@@ -4,7 +4,7 @@ import fs from 'fs'
 import log from 'electron-log'
 import { SequelizeStorage, Umzug } from 'umzug'
 import { migration0001 } from './migrations/0001-add_col'
-import { NTrackerEnv } from '../env'
+import { env, NTrackerEnv } from '../env'
 import { seed } from './seed'
 
 let db
@@ -23,7 +23,8 @@ export const initializeDB = async (appEnv: NTrackerEnv): Promise<void> => {
     storage: dbFilePath,
     define: {
       underscored: true
-    }
+    },
+    logging: env.isDev
   })
 
   await db.authenticate()
