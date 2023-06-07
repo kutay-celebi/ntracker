@@ -10,6 +10,7 @@ import TimeSheet from '@renderer/views/TimeSheet.vue'
 import Todo from '@renderer/views/Todo.vue'
 import { createPinia } from 'pinia'
 import AppSettings from '@renderer/views/AppSettings.vue'
+import 'highlight.js/styles/github.css'
 
 dayjs.extend(utc)
 dayjs.extend(updateLocale)
