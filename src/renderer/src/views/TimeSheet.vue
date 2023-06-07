@@ -233,7 +233,11 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       <el-table-column prop="sum" label="SUM" width="70px" />
 
       <el-table-column v-slot="scope" label="Actions" width="90px">
-        <iconoir-trash class="action-icon remove-icon clickable" @click="() => removeTimeLogs(scope.row)" />
+        <el-popconfirm title="Are you sure?" @confirm="() => removeTimeLogs(scope.row)">
+          <template #reference>
+            <iconoir-trash class="action-icon remove-icon clickable" />
+          </template>
+        </el-popconfirm>
         <iconoir-page-edit class="action-icon clickable" @click.prevent="() => openDetail()" />
       </el-table-column>
     </el-table>
@@ -251,6 +255,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 .action-icon {
   font-size: var(--el-font-size-medium);
   margin-left: 0.25rem;
+  outline: none;
   &:first-child {
     margin-left: 0;
   }
