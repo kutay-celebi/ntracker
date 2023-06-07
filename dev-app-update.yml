@@ -1,4 +1,3 @@
-provider: generic
-# todo @kcelebi enrich
-url: https://todo
-updaterCacheDirName: time-tracker-updater
+owner: kutay-celebi
+repo: ntracker
+provider: github
