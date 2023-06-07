@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import Timer from '@renderer/components/Timer.vue'
 import EntryReport from '@renderer/components/EntryReport.vue'
-import { computed, onMounted, ref, toRaw } from 'vue'
-import { EntryDO } from '../../../main/db/types/Entry'
+import { computed, nextTick, onMounted, ref, toRaw } from 'vue'
+import { Entry, EntryDO } from '../../../main/db/types/Entry'
 import { EntryTimelogDO } from '../../../main/db/types/EntryTimelog'
 import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
 import { EntryListQuery } from '../../../main/db/types/EntryListQuery'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
+import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
+import IconoirPageEdit from '~icons/iconoir/page-edit'
 
 const settings = useSettingsStore()
 
@@ -158,6 +160,16 @@ const getAllEntries = async () => {
   )
 }
 
+const showDetail = ref(false)
+const openDetail = () => {
+  showDetail.value = true
+}
+
+const onNoteSave = () => {
+  console.log('close')
+  saveAll()
+}
+
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
   return await window.api.queryEntries(query)
 }
@@ -221,14 +233,30 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       <el-table-column prop="sum" label="SUM" width="70px" />
 
       <el-table-column v-slot="scope" label="Actions" width="90px">
-        <el-icon color="red" class="clickable" @click="() => removeTimeLogs(scope.row)">
-          <iconoir-trash />
-        </el-icon>
+        <iconoir-trash class="action-icon remove-icon clickable" @click="() => removeTimeLogs(scope.row)" />
+        <iconoir-page-edit class="action-icon clickable" @click.prevent="() => openDetail()" />
       </el-table-column>
     </el-table>
   </el-card>
-
   <entry-report :entry="selectedRow" />
+  <el-dialog v-model="showDetail" width="80%" @close="onNoteSave">
+    <el-card v-if="selectedRow" class="entry-notes" header="Notes" shadow="never">
+      <el-input v-model="selectedRow.notes" type="textarea" rows="20" class="notes-input"></el-input>
+      <markdown-renderer :markdown="selectedRow.notes" class="notes-preview"> </markdown-renderer>
+    </el-card>
+  </el-dialog>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.action-icon {
+  font-size: var(--el-font-size-medium);
+  margin-left: 0.25rem;
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.remove-icon {
+  color: var(--el-color-error);
+}
+</style>
