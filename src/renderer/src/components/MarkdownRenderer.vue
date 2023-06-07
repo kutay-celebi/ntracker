@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="never">
+  <el-card shadow="never" class="renderer">
     <template v-if="$slots.header" #header>
       <slot name="header"></slot>
     </template>
@@ -37,6 +37,6 @@ function renderMarkdown() {
 }
 </script>
 
-<style>
+<style scoped lang="less">
 @import 'highlight.js/styles/default.css';
 </style>

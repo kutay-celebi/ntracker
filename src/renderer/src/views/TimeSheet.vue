@@ -225,12 +225,18 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
     >
       <el-table-column label="Entry" prop="label" min-width="100px" />
 
-      <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label">
+      <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label" width="100px">
         <template #default="scope">
           <div>
             <el-input-number
               v-if="scope.row && scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime())"
               v-model="scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime()).duration"
+              :class="[
+                {
+                  'filled-timelog':
+                    scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime()).duration > 0
+                }
+              ]"
               :controls="false"
               size="small"
               @input="setUnsavedChangeTrue"
@@ -247,7 +253,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
             <iconoir-trash class="action-icon remove-icon clickable" />
           </template>
         </el-popconfirm>
-        <iconoir-page-edit class="action-icon clickable" @click.prevent="() => openDetail()" />
+        <iconoir-page-edit class="action-icon clickable" @click="() => openDetail()" />
       </el-table-column>
     </el-table>
   </el-card>
