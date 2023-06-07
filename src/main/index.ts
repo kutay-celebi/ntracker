@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import './ipc'
 import './db'
 import { initializeDB } from './db/db'
-import setupEnv, { env } from './env'
+import setupEnv from './env'
 import initializeSettings from './settings'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
@@ -13,6 +13,12 @@ import fs from 'fs'
 
 async function createWindow(): Promise<void> {
   const appEnv = setupEnv()
+
+  // clear log  files
+  if (fs.existsSync(appEnv.logFile)) {
+    fs.writeFileSync(appEnv.logFile, '')
+    log.info(`Existing log file is cleared at ${appEnv.logFile}`)
+  }
 
   // adjust logging
   log.transports.file.level = 'info'
@@ -62,9 +68,6 @@ async function createWindow(): Promise<void> {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  // clear log  files
-  fs.writeFileSync(env.logFile, '')
-
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
