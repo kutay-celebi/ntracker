@@ -4,6 +4,7 @@ import { EntryTimelog, EntryTimelogDO } from './EntryTimelog'
 
 export class Entry extends BaseEntity<Entry> {
   declare label: string
+  declare notes?: string
 
   declare createTimelog: HasManyCreateAssociationMixin<EntryTimelog, 'entry_id'>
   declare timelogs?: NonAttribute<EntryTimelog[]>
@@ -15,6 +16,7 @@ export class Entry extends BaseEntity<Entry> {
 
 export interface EntryDO extends BaseDO {
   label: string
+  notes?: string
   timelogs?: EntryTimelogDO[]
   sum?: number
   totalDuration?: number

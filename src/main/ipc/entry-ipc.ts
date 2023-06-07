@@ -14,6 +14,12 @@ ipcMain.handle('db.entry.save', async (_event, args) => {
         where: where(fn('lower', col('label')), obj.label.toLowerCase()),
         defaults: { label: obj.label }
       })
+    } else {
+      entry = await Entry.upsert({
+        id: obj.id,
+        label: obj.label,
+        notes: obj.notes
+      })
     }
 
     if (obj.timelogs) {

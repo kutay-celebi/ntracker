@@ -16,6 +16,9 @@ export const seed = async (db: Sequelize): Promise<void> => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+      },
+      notes: {
+        type: DataTypes.STRING
       }
     },
     { sequelize: db, tableName: 'entry', modelName: 'entry' }
