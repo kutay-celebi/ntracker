@@ -12,6 +12,7 @@ import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
 import IconoirPageEdit from '~icons/iconoir/page-edit'
 import TimerButton from '@renderer/components/TimerButton.vue'
 import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
+import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
 
 const settings = useSettingsStore()
 
@@ -66,6 +67,16 @@ const saveAll = async () => {
     searchEntry.value = ''
     entry.value = { label: '' }
   })
+}
+
+const removeEntry = () => {
+  if (selectedRow.value && selectedRow.value?.id) {
+    console.log('remove')
+    window.api.removeEntry(selectedRow.value.id).then(async () => {
+      await getAllEntries()
+      selectedRow.value = undefined
+    })
+  }
 }
 
 const getSumOfColumn = ({ columns: cols, data }) => {
@@ -215,7 +226,7 @@ const copyAll = (type: string) => {
           @select="selectEntry"
         >
           <template #default="{ item }">
-            <div class="value">{{ item.label }}</div>
+            <div class="w-100">{{ item.label }}</div>
           </template>
         </el-autocomplete>
       </el-form-item>
@@ -237,6 +248,15 @@ const copyAll = (type: string) => {
       <iconoir-save-floppy-disk />
       <span v-if="isUnsavedChange">There are unsaved changes!</span>
     </el-button>
+
+    <el-popconfirm title="It will delete entire entry." width="fit-content" @confirm="removeEntry">
+      <template #reference>
+        <el-button type="danger" :disabled="!selectedRow">
+          <ri-delete-bin5-line class="mr-2" />
+          <span>Delete Entry</span>
+        </el-button>
+      </template>
+    </el-popconfirm>
 
     <el-popover trigger="click" width="200px">
       <template #reference>

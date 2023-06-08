@@ -35,6 +35,10 @@ ipcMain.handle('db.entry.save', async (_event, args) => {
   }
 })
 
+ipcMain.on('db.entry.delete', async (_event, args) => {
+  await Entry.destroy({ where: { id: args } })
+})
+
 ipcMain.handle('db.entry-timelog.removeTimeLogsByIds', async (_event, args: string[]) => {
   await EntryTimelog.destroy({ where: { id: { [Op.in]: args } } })
 })

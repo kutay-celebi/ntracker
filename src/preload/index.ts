@@ -10,6 +10,10 @@ export const api = {
   saveEntry: (entries: EntryDO[]): Promise<void> => {
     return ipcRenderer.invoke('db.entry.save', entries)
   },
+  removeEntry: (id: string): Promise<void> => {
+    ipcRenderer.send('db.entry.delete', id)
+    return Promise.resolve()
+  },
   queryEntries: (query?: EntryListQuery): Promise<Entry[]> => {
     return ipcRenderer.invoke('db.entry.queryEntries', query)
   },
