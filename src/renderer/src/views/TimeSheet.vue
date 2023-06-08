@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Timer from '@renderer/components/Timer.vue'
 import EntryReport from '@renderer/components/EntryReport.vue'
 import { computed, onMounted, ref, toRaw } from 'vue'
 import { EntryDO } from '../../../main/db/types/Entry'
@@ -12,6 +11,7 @@ import { useSettingsStore } from '@renderer/store/settigs'
 import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
 import IconoirPageEdit from '~icons/iconoir/page-edit'
 import TimerButton from '@renderer/components/TimerButton.vue'
+import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
 
 const settings = useSettingsStore()
 
@@ -81,7 +81,8 @@ const getSumOfColumn = ({ columns: cols, data }) => {
       sums[index] = 'SUM'
       return
     }
-    if (index === cols.length - 1) {
+
+    if (index === cols.length - 1 || index === cols.length - 2) {
       sums[index] = ''
       return
     }
@@ -173,6 +174,27 @@ const onNoteSave = () => {
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
   return await window.api.queryEntries(query)
 }
+
+const copyAll = (type: string) => {
+  let clipboard
+  if (type === 'entry-comma') {
+    clipboard = entries.value.map((e) => e.label).join(',')
+  } else if (type === 'all-table') {
+    clipboard = entries.value
+      .map((e) => {
+        let tableArr = [e.label]
+
+        if (e.timelogs) {
+          tableArr = [...tableArr, ...e.timelogs.map((tl) => String(tl.duration))]
+        }
+
+        return tableArr.join('\t')
+      })
+      .join('\n')
+  }
+
+  navigator.clipboard.writeText(clipboard)
+}
 </script>
 
 <template>
@@ -210,6 +232,20 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       <iconoir-save-floppy-disk />
       <span v-if="isUnsavedChange">There are unsaved changes!</span>
     </el-button>
+
+    <el-popover trigger="click" width="200px">
+      <template #reference>
+        <el-button>
+          <ri-file-copy2-line />
+        </el-button>
+      </template>
+      <div>
+        <div>Copy As</div>
+        <div class="copy-button" @click="() => copyAll('entry-comma')">separated by commas</div>
+        <div class="copy-button" @click="() => copyAll('all-table')">as table</div>
+      </div>
+    </el-popover>
+
     <el-date-picker v-model="selectedDate" class="float-right" @change="getAllEntries"></el-date-picker>
     <el-table
       v-model:data="entries"
@@ -291,5 +327,15 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 
 .remove-icon {
   color: var(--el-color-error);
+}
+
+.copy-button {
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: var(--el-border-radius-base);
+
+  &:hover {
+    background-color: var(--el-fill-color-light);
+  }
 }
 </style>
