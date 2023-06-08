@@ -35,6 +35,8 @@ const columns = computed(() => {
   return cols
 })
 
+const isToday = computed(() => dayjs(selectedDate.value).startOf('days').isSame(dayjs().startOf('days')))
+
 onMounted(async () => {
   await getAllEntries()
 })
@@ -58,15 +60,12 @@ const addEntry = async () => {
 }
 
 const saveAll = async () => {
-  await window.api
-    .saveEntry(toRaw(entries.value))
-    .then(async () => {
-      isUnsavedChange.value = false
-      await getAllEntries()
-      searchEntry.value = ''
-      entry.value = { label: '' }
-    })
-    .catch((err) => console.log(err))
+  await window.api.saveEntry(toRaw(entries.value)).then(async () => {
+    isUnsavedChange.value = false
+    await getAllEntries()
+    searchEntry.value = ''
+    entry.value = { label: '' }
+  })
 }
 
 const getSumOfColumn = ({ columns: cols, data }) => {
@@ -205,7 +204,7 @@ const copyAll = (type: string) => {
 
 <template>
   <el-card class="my-2">
-    <el-form label-position="left" label-width="160px" @submit="addEntry">
+    <el-form label-position="left" label-width="160px" @submit.prevent="addEntry">
       <el-form-item label="Label" required>
         <el-autocomplete
           v-model="searchEntry"
@@ -297,7 +296,7 @@ const copyAll = (type: string) => {
 
       <el-table-column label="Timer" width="100px">
         <template #default="{ $index }">
-          <timer-button v-model="entries[$index]" @add-duration="setUnsavedChangeTrue" />
+          <timer-button v-if="isToday" v-model="entries[$index]" @add-duration="setUnsavedChangeTrue" />
         </template>
       </el-table-column>
 
