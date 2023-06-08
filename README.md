@@ -24,8 +24,10 @@ You can manage your work more easily and report your records with less difficult
 ## Screenshots
 
 <div align="center">
-  <img src="./docs/ss1.png" align="center" width="400px"/>
-  <img src="./docs/ss2.png" align="center" width="400px"/>
+  <img src="./docs/ss1.png" align="center" width="300px"/>
+  <img src="./docs/ss2.png" align="center" width="300px"/>
+  <img src="./docs/ss3.png" align="center" width="300px"/>
+  <img src="./docs/ss4.png" align="center" width="00px"/>
 </div>
 
 ## Built With
