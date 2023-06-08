@@ -81,9 +81,9 @@ const addDuration = () => {
   <div v-if="internalModel" class="timer">
     <ri-play-circle-line v-if="!timer.isRunning.value" class="timer-icon timer-play" @click.stop="toggleTimer" />
     <ri-pause-circle-line v-if="timer.isRunning.value" class="timer-icon timer-pause" @click.stop="toggleTimer" />
-    <el-popconfirm title="Do you want to add?" @confirm="addDuration" @cancel="resetTimer">
+    <el-popconfirm v-if="currentDuration > 0" title="Do you want to add?" @confirm="addDuration" @cancel="resetTimer">
       <template #reference>
-        <ri-stop-circle-line v-if="currentDuration > 0" class="timer-icon timer-stop" @click.stop="toggleTimer" />
+        <ri-stop-circle-line class="timer-icon timer-stop" @click.stop="toggleTimer" />
       </template>
     </el-popconfirm>
     {{ timerButtonText }}
