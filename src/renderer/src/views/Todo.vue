@@ -7,6 +7,7 @@ import IconoirAddCircle from '~icons/iconoir/add-circle'
 import IconoirCircle from '~icons/iconoir/circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import IconoirPrecisionTool from '~icons/iconoir/precision-tool'
+import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
 import dayjs from 'dayjs'
 import { useUtil } from '@renderer/compositions/helper'
 import { Sort } from '../../../main/db/types/Sort'
@@ -90,6 +91,12 @@ const moveToToday = (todo: TodoDO) => {
     await fetchTodos()
   })
 }
+
+const remove = (todo: TodoDO) => {
+  if (todo && todo.id) {
+    window.api.removeTodo(todo.id).then(() => fetchTodos())
+  }
+}
 </script>
 
 <template>
@@ -120,20 +127,27 @@ const moveToToday = (todo: TodoDO) => {
                 />
               </transition>
             </template>
-            <div :class="[{ 'is-completed': todo.completed }, 'strike', 'mx-2', 'todo-item-text']">
+
+            <span :class="[{ 'is-completed': todo.completed }, 'mx-2', 'todo-item-text']">
               {{ todo.label }}
-            </div>
+            </span>
+
             <template #suffix>
-              <el-tooltip v-if="activeTab === 'all'">
-                <iconoir-precision-tool
-                  title="Move to today"
-                  class="todo-action clickable"
-                  @click.stop="moveToToday(todo)"
-                />
-                <template #content> Move to today </template>
-              </el-tooltip>
+              <div class="todo-action-container">
+                <el-tooltip v-if="activeTab === 'all'">
+                  <iconoir-precision-tool class="todo-action clickable" @click.stop="() => moveToToday(todo)" />
+                  <template #content> Move to today </template>
+                </el-tooltip>
+
+                <el-popconfirm title="Are you sure?" @confirm="() => remove(todo)">
+                  <template #reference>
+                    <ri-delete-bin5-line class="todo-action clickable remove" @click.stop />
+                  </template>
+                </el-popconfirm>
+              </div>
             </template>
           </list-item>
+
           <list-item v-if="activeTab !== 'completed'">
             <div class="todo-form">
               <el-input v-model="todoToBeSaved.label" size="large" placeholder="Todo" @keydown.enter="addTodo" />
@@ -161,6 +175,14 @@ const moveToToday = (todo: TodoDO) => {
 
 <style scoped lang="less">
 .todo-action {
+  &-container {
+    display: flex;
+  }
+
+  &.remove {
+    color: var(--el-color-error);
+  }
+
   font-size: var(--el-font-size-large);
   outline: none !important;
   margin-left: 0.5rem;
@@ -179,35 +201,12 @@ const moveToToday = (todo: TodoDO) => {
   user-select: none;
 }
 
-.todo-item-text {
-  width: 100%;
-}
-
 .icon-success {
   color: var(--el-color-success);
 }
 
 .completed {
   color: var(--el-disabled-text-color) !important;
-}
-
-.strike {
-  position: relative;
-}
-
-.strike::after {
-  content: ' ';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: black;
-  transition: width 0.3s ease;
-}
-
-.completed > .strike::after {
-  width: 100%;
 }
 
 .slide-leave-to,
@@ -244,7 +243,6 @@ const moveToToday = (todo: TodoDO) => {
   svg {
     align-self: center;
   }
-  height: 40px;
   font-size: 20px;
   margin-left: 1rem;
   cursor: pointer;

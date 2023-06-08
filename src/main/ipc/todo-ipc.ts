@@ -52,3 +52,7 @@ ipcMain.handle('db.todo.save', async (_event, args: TodoDO) => {
     label: args.label
   })
 })
+
+ipcMain.on('db.todo.delete', async (_event, args: string) => {
+  return await Todo.destroy({ where: { id: args } })
+})

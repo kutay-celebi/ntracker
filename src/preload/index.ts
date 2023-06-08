@@ -25,6 +25,10 @@ export const api = {
   saveTodo: (todo: TodoDO): Promise<TodoDO> => {
     return ipcRenderer.invoke('db.todo.save', todo)
   },
+  removeTodo: (id: string): Promise<void> => {
+    ipcRenderer.send('db.todo.delete', id)
+    return Promise.resolve()
+  },
   getAllSettings: (): Promise<any> => {
     return ipcRenderer.invoke('app.settings.getAllSettings')
   },

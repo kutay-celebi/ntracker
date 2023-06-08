@@ -3,8 +3,12 @@
 <template>
   <div class="list-item">
     <slot name="prefix" />
-    <slot />
-    <slot name="suffix" />
+    <div class="list-item-content">
+      <slot />
+    </div>
+    <div class="list-item-suffix">
+      <slot name="suffix" />
+    </div>
   </div>
 </template>
 
@@ -14,5 +18,13 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   border-bottom: var(--el-border-width) var(--el-border-style) var(--el-border-color);
+  width: 100%;
+
+  &-content {
+    width: 100%;
+  }
+
+  &-suffix {
+  }
 }
 </style>
