@@ -29,7 +29,7 @@ const columns = computed(() => {
   let date = dayjs(selectedDate.value).startOf('days').startOf('weeks')
   const cols: any[] = []
   for (let i = 0; i < (settings.timesheet.onlyWeekDays ? 5 : 7); i++) {
-    cols.push({ props: date.toDate(), label: date.format('DD - ddd') })
+    cols.push({ props: date.toDate(), label: date.format('ddd') })
     date = date.add(1, 'days')
   }
   return cols
@@ -225,7 +225,7 @@ const timers = ref([])
     >
       <el-table-column label="Entry" prop="label" min-width="100px" />
 
-      <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label" width="100px">
+      <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label" width="50px">
         <template #default="scope">
           <div>
             <el-input-number
@@ -239,6 +239,8 @@ const timers = ref([])
               ]"
               :controls="false"
               size="small"
+              :max="24"
+              :min="0"
               @input="setUnsavedChangeTrue"
             ></el-input-number>
           </div>
@@ -247,13 +249,13 @@ const timers = ref([])
 
       <el-table-column prop="sum" label="SUM" width="70px" />
 
-      <el-table-column label="Timer" width="125px">
+      <el-table-column label="Timer" width="120px">
         <template #default="{ $index }">
           <timer-button v-model="entries[$index]" @add-duration="setUnsavedChangeTrue" />
         </template>
       </el-table-column>
 
-      <el-table-column v-slot="scope" label="Actions" width="90px">
+      <el-table-column v-slot="scope" label="Actions" width="85px">
         <el-popconfirm title="Are you sure?" @confirm="() => removeTimeLogs(scope.row)">
           <template #reference>
             <iconoir-trash class="action-icon remove-icon clickable" />
