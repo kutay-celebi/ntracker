@@ -74,7 +74,8 @@ const getSumOfColumn = ({ columns: cols, data }) => {
     return []
   }
 
-  const sums: string[] = []
+  const sums: any[] = []
+  let total = 0
   let startOf = dayjs(selectedDate.value).startOf('weeks').startOf('days')
   cols.forEach((column, index) => {
     if (index === 0) {
@@ -87,15 +88,20 @@ const getSumOfColumn = ({ columns: cols, data }) => {
       return
     }
 
-    sums[index] = data
+    const rowSum = data
       .filter((entry) => entry.timelogs)
       .flatMap((entry) =>
         entry.timelogs.filter((tl) => dayjs(tl.date).startOf('days').isSame(startOf)).map((val) => val.duration)
       )
       .reduce((val1, val2) => val1 + val2, 0)
+    sums[index] = rowSum
+    total += rowSum
 
     startOf = startOf.add(1, 'days')
   })
+
+  sums[sums.length - 3] = total
+
   return sums
 }
 
