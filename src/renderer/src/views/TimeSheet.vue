@@ -45,7 +45,7 @@ const addEntry = async () => {
   }
 
   const timelogs: EntryTimelogDO[] = []
-  entry.value.label = searchEntry.value
+  entry.value.label = searchEntry.value.trim()
 
   let date = dayjs(selectedDate.value).startOf('weeks').startOf('days')
   for (let i = 0; i < 7; i++) {
@@ -126,7 +126,7 @@ const selectEntry = async (item: EntryDO) => {
 const queryAutoComplete = async (text: string, cb: any) => {
   await fetchEntries({ label: text }).then((resp) => {
     if (settings.timesheet.forceLabel) {
-      const toBeSelected = resp.find((entry) => entry.label.toLowerCase() === text.toLowerCase())
+      const toBeSelected = resp.find((entry) => entry.label.toLowerCase() === text.trim().toLowerCase())
       if (toBeSelected) {
         selectEntry(toBeSelected)
       } else {
@@ -180,7 +180,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
     <el-form label-position="left" label-width="160px" @submit="addEntry">
       <el-form-item label="Label" required>
         <el-autocomplete
-          v-model.trim="searchEntry"
+          v-model="searchEntry"
           :fetch-suggestions="queryAutoComplete"
           fit-input-width
           value-key="label"
@@ -251,15 +251,15 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
         </template>
       </el-table-column>
 
-      <el-table-column prop="sum" label="SUM" width="70px" />
+      <el-table-column prop="sum" label="SUM" width="50px" />
 
-      <el-table-column label="Timer" width="120px">
+      <el-table-column label="Timer" width="100px">
         <template #default="{ $index }">
           <timer-button v-model="entries[$index]" @add-duration="setUnsavedChangeTrue" />
         </template>
       </el-table-column>
 
-      <el-table-column v-slot="scope" label="Actions" width="85px">
+      <el-table-column v-slot="scope" label="Actions" width="75px">
         <el-popconfirm title="Are you sure?" @confirm="() => removeTimeLogs(scope.row)">
           <template #reference>
             <iconoir-trash class="action-icon remove-icon clickable" />
