@@ -6,6 +6,7 @@ import ListItem from '@renderer/components/ListItem.vue'
 import IconoirAddCircle from '~icons/iconoir/add-circle'
 import IconoirCircle from '~icons/iconoir/circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
+import IconoirPrecisionTool from '~icons/iconoir/precision-tool'
 import dayjs from 'dayjs'
 import { useUtil } from '@renderer/compositions/helper'
 import { Sort } from '../../../main/db/types/Sort'
@@ -82,6 +83,13 @@ const addTodo = async () => {
       todoToBeSaved.value = { label: '', completed: false }
     })
 }
+
+const moveToToday = (todo: TodoDO) => {
+  todo.dueDate = dayjs().endOf('days').toDate()
+  window.api.saveTodo(toRaw(todo)).then(async () => {
+    await fetchTodos()
+  })
+}
 </script>
 
 <template>
@@ -92,29 +100,43 @@ const addTodo = async () => {
       <el-tab-pane label="Completed" name="completed" />
       <el-container>
         <list class="w-100 split-panel">
-          <list-item v-for="(todo, idx) in todos" :key="idx" :class="[{ completed: todo.completed }, 'todo-item']">
+          <list-item
+            v-for="(todo, idx) in todos"
+            :key="idx"
+            :class="[{ completed: todo.completed }, 'todo-item']"
+            @click="() => selectTodo(todo)"
+          >
             <template #prefix>
               <transition name="slide">
-                <iconoir-circle v-if="!todo.completed" class="todo-icon clickable" @click="() => toggleTodo(todo)" />
-                <iconoir-check-circle v-else class="todo-icon icon-success clickable" @click="() => toggleTodo(todo)" />
+                <iconoir-circle
+                  v-if="!todo.completed"
+                  class="todo-icon clickable"
+                  @click.stop="() => toggleTodo(todo)"
+                />
+                <iconoir-check-circle
+                  v-else
+                  class="todo-icon icon-success clickable"
+                  @click.stop="() => toggleTodo(todo)"
+                />
               </transition>
             </template>
-            <div :class="[{ 'is-completed': todo.completed }, 'strike', 'mx-2']" @click="() => selectTodo(todo)">
+            <div :class="[{ 'is-completed': todo.completed }, 'strike', 'mx-2', 'todo-item-text']">
               {{ todo.label }}
             </div>
+            <template #suffix>
+              <el-tooltip v-if="activeTab === 'all'">
+                <iconoir-precision-tool
+                  title="Move to today"
+                  class="todo-action clickable"
+                  @click.stop="moveToToday(todo)"
+                />
+                <template #content> Move to today </template>
+              </el-tooltip>
+            </template>
           </list-item>
           <list-item v-if="activeTab !== 'completed'">
             <div class="todo-form">
               <el-input v-model="todoToBeSaved.label" size="large" placeholder="Todo" @keydown.enter="addTodo" />
-              <el-date-picker
-                v-if="activeTab === 'all'"
-                v-model="todoToBeSaved.dueDate"
-                size="large"
-                type="datetime"
-                class="todo-date-picker"
-                placeholder="Due Date"
-                clearable
-              />
               <div class="add-todo-icon">
                 <iconoir-add-circle @click="addTodo" />
               </div>
@@ -138,13 +160,27 @@ const addTodo = async () => {
 </template>
 
 <style scoped lang="less">
+.todo-action {
+  font-size: var(--el-font-size-large);
+  outline: none !important;
+  margin-left: 0.5rem;
+  &:first-child {
+    margin: 0;
+  }
+}
+
 .todo-item {
   transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .todo-icon {
   transition: all 0.3s ease;
   user-select: none;
+}
+
+.todo-item-text {
+  width: 100%;
 }
 
 .icon-success {
