@@ -9,7 +9,7 @@
   "repository": "https://github.com/kutay-celebi/ntracker",
   "scripts": {
     "format": "prettier --write .",
-    "changelog": "standard-version",
+    "changelog": "standard-version -t",
     "release": "npm run changelog && git add CHANGELOG.md && git commit -m 'chore: Update CHANGELOG.md' && git push",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
     "lint:commit": "commitlint -e $GIT_PARAMS",

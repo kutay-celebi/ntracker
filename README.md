@@ -14,7 +14,7 @@
   <a href="https://github.com/kutay-celebi/ntracker/releases/latest">
     <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/kutay-celebi/ntracker/latest/total?style=for-the-badge">
   </a>
-  
+
   <a href="https://www.buymeacoffee.com/kutaycelebi" target="_blank"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" ></a>
 </div>
 
@@ -55,10 +55,10 @@ You can manage your work more easily and report your records with less difficult
 Download the latest version from the releases page.
 
 
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.1/ntrack-1.1.1-setup.exe)
-[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.1/ntrack-1.1.1-setup.exe)
-[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.1/ntrack-1.1.1.dmg)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.1/ntrack-1.1.1.AppImage)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2-setup.exe)
+[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2-setup.exe)
+[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2.dmg)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2.AppImage)
 
 
 ## 🧑‍💻 Running Development

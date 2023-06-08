@@ -47,3 +47,5 @@ publish:
   - provider: github
     owner: kutay-celebi
     repo: ntracker
+releaseInfo:
+  releaseNotes: CHANGELOG.md
