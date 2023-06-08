@@ -11,6 +11,7 @@ import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
 import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
 import IconoirPageEdit from '~icons/iconoir/page-edit'
+import TimerButton from '@renderer/components/TimerButton.vue'
 
 const settings = useSettingsStore()
 
@@ -166,13 +167,14 @@ const openDetail = () => {
 }
 
 const onNoteSave = () => {
-  console.log('close')
   saveAll()
 }
 
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
   return await window.api.queryEntries(query)
 }
+
+const timers = ref([])
 </script>
 
 <template>
@@ -204,8 +206,6 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       <el-button @click="addEntry">Add</el-button>
     </el-form>
   </el-card>
-
-  <timer v-model="selectedRow" @add-duration="setUnsavedChangeTrue" />
 
   <el-card class="my-2">
     <el-button :type="isUnsavedChange ? `warning` : `success`" @click="saveAll">
@@ -246,6 +246,12 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
       </el-table-column>
 
       <el-table-column prop="sum" label="SUM" width="70px" />
+
+      <el-table-column label="Timer" width="125px">
+        <template #default="{ $index }">
+          <timer-button v-model="entries[$index]" @add-duration="setUnsavedChangeTrue" />
+        </template>
+      </el-table-column>
 
       <el-table-column v-slot="scope" label="Actions" width="90px">
         <el-popconfirm title="Are you sure?" @confirm="() => removeTimeLogs(scope.row)">

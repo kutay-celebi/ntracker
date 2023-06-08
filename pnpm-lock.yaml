@@ -60,6 +60,9 @@ devDependencies:
   '@iconify-json/iconoir':
     specifier: ^1.1.28
     version: 1.1.28
+  '@iconify-json/ri':
+    specifier: ^1.1.9
+    version: 1.1.9
   '@rushstack/eslint-patch':
     specifier: ^1.3.0
     version: 1.3.0
@@ -776,6 +779,12 @@ packages:
 
   /@iconify-json/iconoir@1.1.28:
     resolution: {integrity: sha512-0W0Kre4S9tv2LShEW/DpTNHmW/LDsC2EFj42QhR1NrwB4Swtdg4TPgubkzCwKJKATM6lRlFMcPXX1ZhSKfoFAQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/ri@1.1.9:
+    resolution: {integrity: sha512-YOSBce/bzkORxBI1mYz4b9vidaJDeorwzuddFoIV9ajazncI55VLtQ+puIra0d3HQhYfswNSwRy8PrHTZmvaOg==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
