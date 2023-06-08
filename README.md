@@ -15,7 +15,7 @@
     <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/downloads/kutay-celebi/ntracker/latest/total?style=for-the-badge">
   </a>
   
-  <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" ></a>
+  <a href="https://www.buymeacoffee.com/kutaycelebi" target="_blank"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee" ></a>
 </div>
 
 ## Introduction
