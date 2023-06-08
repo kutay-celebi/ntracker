@@ -31,7 +31,6 @@ export const seed = async (db: Sequelize): Promise<void> => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-
       date: {
         type: DataTypes.DATE,
         allowNull: false
@@ -44,8 +43,15 @@ export const seed = async (db: Sequelize): Promise<void> => {
     { sequelize: db, tableName: 'entry_timelog', freezeTableName: true, modelName: 'entry_timelog' }
   )
 
-  Entry.hasMany(EntryTimelog, { foreignKey: 'entry_id', as: 'timelogs' })
-  EntryTimelog.belongsTo(Entry, { foreignKey: 'entry_id' })
+  Entry.hasMany(EntryTimelog, {
+    as: 'timelogs',
+    onDelete: 'CASCADE',
+    hooks: true,
+    foreignKey: 'entry_id'
+  })
+  EntryTimelog.belongsTo(Entry, {
+    foreignKey: 'entry_id'
+  })
 
   Todo.init(
     {
