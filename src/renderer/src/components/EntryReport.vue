@@ -31,7 +31,7 @@ const prepareReport = async () => {
 <template>
   <el-card header="Report">
     <div v-if="entryReport">
-      <markdown-renderer :markdown="entryReport.notes" />
+      <markdown-renderer v-if="entryReport.notes" :markdown="entryReport.notes" />
 
       <h1>Total Hours:</h1>
       <el-table :data="entryReport.monthly" show-summary>

@@ -173,8 +173,6 @@ const onNoteSave = () => {
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
   return await window.api.queryEntries(query)
 }
-
-const timers = ref([])
 </script>
 
 <template>
@@ -220,12 +218,18 @@ const timers = ref([])
       :summary-method="getSumOfColumn"
       size="large"
       highlight-current-row
-      :class="[{ 'dense-table': settings.timesheet.denseTable }]"
+      :class="[{ 'dense-table': settings.timesheet.denseTable }, 'entry-table']"
       @current-change="selectRow"
     >
       <el-table-column label="Entry" prop="label" min-width="100px" />
 
-      <el-table-column v-for="col in columns" :key="col.label" :label="col.label" :prop="col.label" width="50px">
+      <el-table-column
+        v-for="col in columns"
+        :key="col.label"
+        :label="col.label"
+        :prop="col.label"
+        :width="settings.timesheet.denseTable ? '50px' : '80px'"
+      >
         <template #default="scope">
           <div>
             <el-input-number
