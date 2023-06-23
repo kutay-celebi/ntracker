@@ -214,7 +214,7 @@ const copyAll = (type: string) => {
 </script>
 
 <template>
-  <el-card class="my-2">
+  <el-card class="mb-2">
     <el-form label-position="left" label-width="160px" @submit.prevent="addEntry">
       <el-form-item label="Label" required>
         <el-autocomplete
@@ -243,7 +243,7 @@ const copyAll = (type: string) => {
     </el-form>
   </el-card>
 
-  <el-card class="my-2">
+  <el-card class="mb-2">
     <el-button :type="isUnsavedChange ? `warning` : `success`" @click="saveAll">
       <iconoir-save-floppy-disk />
       <span v-if="isUnsavedChange">There are unsaved changes!</span>

@@ -100,7 +100,7 @@ const remove = (todo: TodoDO) => {
 </script>
 
 <template>
-  <el-card class="my-2">
+  <el-card>
     <el-tabs v-model="activeTab" mode="horizontal" class="my-2">
       <el-tab-pane label="Today" name="today" />
       <el-tab-pane label="All Uncompleted" name="all" />

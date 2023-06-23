@@ -14,8 +14,8 @@ onBeforeMount(async () => {
 
 <template>
   <el-container>
-    <el-aside width="65px" class="sidebar my2">
-      <el-menu mode="vertical" class="my-2 side-menu" collapse router :default-active="$route.path">
+    <el-aside width="65px" class="sidebar">
+      <el-menu mode="vertical" class="side-menu" collapse router :default-active="$route.path">
         <el-menu-item class="menu-logo">
           <img src="./assets/icon.png" />
         </el-menu-item>
