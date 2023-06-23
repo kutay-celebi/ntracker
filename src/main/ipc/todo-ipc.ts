@@ -14,7 +14,7 @@ ipcMain.handle('db.todo.queryTodos', async (_event, args: TodoListQuery) => {
   if (args && args.timeRange) {
     where = {
       ...where,
-      [Op.or]: [
+      [Op.and]: [
         {
           dueDate: {
             [Op.gte]: args.timeRange[0]
