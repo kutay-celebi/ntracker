@@ -4,6 +4,8 @@ import { Entry, EntryDO } from '../main/db/types/Entry'
 import { EntryListQuery } from '../main/db/types/EntryListQuery'
 import { EntryReportDO } from '../main/db/types/EntryReportDO'
 import { TodoDO, TodoListQuery } from '../main/db/types/Todo'
+import { NTrackerEnv } from '../main/env'
+import { UpdateCheckResult } from 'electron-updater'
 
 // Custom APIs for renderer
 export const api = {
@@ -36,8 +38,17 @@ export const api = {
   getAllSettings: (): Promise<any> => {
     return ipcRenderer.invoke('app.settings.getAllSettings')
   },
+  getEnvs: (): Promise<NTrackerEnv> => {
+    return ipcRenderer.invoke('app.settings.getEnvs')
+  },
   saveSetting: (args: any): void => {
     ipcRenderer.send('app.settings.setSetting', args)
+  },
+  checkUpdates: (): Promise<UpdateCheckResult> => {
+    return ipcRenderer.invoke('app.settings.checkUpdate')
+  },
+  downloadUpdate: (): void => {
+    ipcRenderer.send('app.settings.downloadUpdate')
   }
 }
 
