@@ -5,27 +5,31 @@ import icon from '../../resources/icon.png?asset'
 import './ipc'
 import './db'
 import { initializeDB } from './db/db'
-import setupEnv from './env'
-import initializeSettings from './settings'
+import { nTrackerEnv, setupEnv } from './env'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import fs from 'fs'
 
-async function createWindow(): Promise<void> {
-  const appEnv = setupEnv()
+async function initializeApp(): Promise<void> {
+  autoUpdater.autoDownload = false
+  setupEnv()
 
   // clear log  files
-  if (fs.existsSync(appEnv.logFile)) {
-    fs.writeFileSync(appEnv.logFile, '')
-    log.info(`Existing log file is cleared at ${appEnv.logFile}`)
+  if (fs.existsSync(nTrackerEnv.logFile)) {
+    fs.writeFileSync(nTrackerEnv.logFile, '')
+    log.info(`Existing log file is cleared at ${nTrackerEnv.logFile}`)
   }
 
   // adjust logging
   log.transports.file.level = 'info'
-  log.transports.file.resolvePath = (): string => appEnv.logFile
+  log.transports.file.resolvePath = (): string => nTrackerEnv.logFile
 
-  await initializeDB(appEnv)
-  initializeSettings(appEnv)
+  // initialize db.
+  await initializeDB()
+}
+
+async function createWindow(): Promise<void> {
+  await initializeApp()
 
   const display = screen.getPrimaryDisplay()
   const size = display.size
@@ -64,12 +68,9 @@ async function createWindow(): Promise<void> {
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('tr.com.nekasoft')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

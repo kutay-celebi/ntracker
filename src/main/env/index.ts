@@ -8,19 +8,30 @@ export interface NTrackerEnv {
   logFile: string
   dbPath: string
   isDev: boolean
+  version: any
 }
 
-export const env: NTrackerEnv = { logFile: '', appPath: '', configPath: '', dbPath: '', isDev: true, userPath: '' }
+let nTrackerEnv: NTrackerEnv = {
+  logFile: '',
+  appPath: '',
+  configPath: '',
+  dbPath: '',
+  isDev: true,
+  userPath: '',
+  version: undefined
+}
 
-const setupEnv = (): NTrackerEnv => {
+const setupEnv = (): void => {
   const userData = app.getPath('userData')
-  return {
+
+  nTrackerEnv = {
     userPath: userData,
     configPath: path.join(userData, 'config'),
     dbPath: userData,
     logFile: path.join(userData, '/logs/app.log'),
     appPath: app.getPath('appData'),
-    isDev: process.env.NODE_ENV === 'development'
+    isDev: process.env.NODE_ENV === 'development',
+    version: app.getVersion()
   }
 }
-export default setupEnv
+export { setupEnv, nTrackerEnv }

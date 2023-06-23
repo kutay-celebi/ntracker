@@ -4,14 +4,14 @@ import fs from 'fs'
 import log from 'electron-log'
 import { SequelizeStorage, Umzug } from 'umzug'
 import { migration0001 } from './migrations/0001-add_col'
-import { env, NTrackerEnv } from '../env'
+import { nTrackerEnv } from '../env'
 import { seed } from './seed'
 
 let db
 let umzug
 
-export const initializeDB = async (appEnv: NTrackerEnv): Promise<void> => {
-  const dbFilePath = path.join(appEnv.dbPath, 'db.sqlite3')
+export const initializeDB = async (): Promise<void> => {
+  const dbFilePath = path.join(nTrackerEnv.dbPath, 'db.sqlite3')
   const isDbExist = fs.existsSync(dbFilePath)
   if (!isDbExist) {
     log.info(`Creating database on path ${dbFilePath}`)
@@ -24,7 +24,7 @@ export const initializeDB = async (appEnv: NTrackerEnv): Promise<void> => {
     define: {
       underscored: true
     },
-    logging: env.isDev
+    logging: nTrackerEnv.isDev
   })
 
   await db.authenticate()
