@@ -55,10 +55,10 @@ You can manage your work more easily and report your records with less difficult
 Download the latest version from the releases page.
 
 
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2-setup.exe)
-[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2-setup.exe)
-[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2.dmg)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.1.2/ntrack-1.1.2.AppImage)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.2.0/ntrack-1.2.0-setup.exe)
+[![Windows](https://img.shields.io/badge/Windows%20Portable-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/kutay-celebi/ntracker/releases/download/1.2.0/ntrack-1.2.0-setup.exe)
+[![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)](https://github.com/kutay-celebi/ntracker/releases/download/1.2.0/ntrack-1.2.0.dmg)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/kutay-celebi/ntracker/releases/download/1.2.0/ntrack-1.2.0.AppImage)
 
 
 ## 🧑‍💻 Running Development
