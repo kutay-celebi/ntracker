@@ -71,7 +71,6 @@ const saveAll = async () => {
 
 const removeEntry = () => {
   if (selectedRow.value && selectedRow.value?.id) {
-    console.log('remove')
     window.api.removeEntry(selectedRow.value.id).then(async () => {
       await getAllEntries()
       selectedRow.value = undefined
