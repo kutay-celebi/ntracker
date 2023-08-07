@@ -16,7 +16,9 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve('src/renderer/src'),
+        '@main': resolve('src/main'),
+        '@preload': resolve('src/preload')
       }
     },
     plugins: [vue(), Icons({ compiler: 'vue3' })]
