@@ -6,6 +6,7 @@ import { SequelizeStorage, Umzug } from 'umzug'
 import { migration0001 } from './migrations/0001-add_col'
 import { nTrackerEnv } from '../env'
 import { seed } from './seed'
+import { migration0002 } from './migrations/0002-add_estimation'
 
 let db
 let umzug
@@ -32,7 +33,7 @@ export const initializeDB = async (): Promise<void> => {
 
   // migration
   umzug = new Umzug({
-    migrations: [migration0001],
+    migrations: [migration0001, migration0002],
     context: db.getQueryInterface(),
     storage: new SequelizeStorage({ sequelize: db }),
     logger: log

@@ -39,4 +39,8 @@ function renderMarkdown() {
 
 <style scoped lang="less">
 @import 'highlight.js/styles/default.css';
+
+.renderer {
+  width: 100%;
+}
 </style>

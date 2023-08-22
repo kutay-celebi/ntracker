@@ -5,6 +5,7 @@ import { EntryTimelog, EntryTimelogDO } from './EntryTimelog'
 export class Entry extends BaseEntity<Entry> {
   declare label: string
   declare notes?: string
+  declare estimation: number
 
   declare timelogs?: NonAttribute<EntryTimelog[]>
 }
@@ -15,4 +16,5 @@ export interface EntryDO extends BaseDO {
   timelogs?: EntryTimelogDO[]
   sum?: number
   totalDuration?: number
+  estimation?: number
 }

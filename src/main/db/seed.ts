@@ -19,6 +19,10 @@ export const seed = async (db: Sequelize): Promise<void> => {
       },
       notes: {
         type: DataTypes.STRING
+      },
+      estimation: {
+        type: DataTypes.FLOAT,
+        allowNull: true
       }
     },
     { sequelize: db, tableName: 'entry', modelName: 'entry' }

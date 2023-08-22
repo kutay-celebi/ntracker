@@ -16,7 +16,7 @@ import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
 
 const settings = useSettingsStore()
 
-const entry = ref<EntryDO>({ label: '', notes: '' })
+const entry = ref<EntryDO>({ label: '', notes: '', estimation: 0 })
 const isUnsavedChange = ref(false)
 const selectedDate = ref<Date>(new Date())
 
@@ -230,6 +230,10 @@ const copyAll = (type: string) => {
         </el-autocomplete>
       </el-form-item>
 
+      <el-form-item label="Estimation">
+        <el-input-number v-model="entry.estimation" :min="0" :controls="false"></el-input-number>
+      </el-form-item>
+
       <el-form-item label="Notes">
         <el-input
           v-model="entry.notes"
@@ -305,6 +309,7 @@ const copyAll = (type: string) => {
               size="small"
               :max="24"
               :min="0"
+              class="entry-input-number"
               @input="setUnsavedChangeTrue"
             ></el-input-number>
           </div>
@@ -331,11 +336,20 @@ const copyAll = (type: string) => {
   </el-card>
 
   <entry-report :entry="selectedRow" />
-  <el-dialog v-model="showDetail" width="80%" @close="onNoteSave">
-    <el-card v-if="selectedRow" class="entry-notes" header="Notes" shadow="never">
-      <el-input v-model="selectedRow.notes" type="textarea" rows="20" class="notes-input"></el-input>
-      <markdown-renderer :markdown="selectedRow.notes" class="notes-preview"> </markdown-renderer>
-    </el-card>
+  <el-dialog v-model="showDetail" width="80%" :title="selectedRow?.label" @close="onNoteSave">
+    <div v-if="selectedRow">
+      <el-form label-position="top">
+        <el-form-item label="Estimation">
+          <el-input-number v-model="selectedRow.estimation" :min="0" :controls="false"></el-input-number>
+        </el-form-item>
+        <el-form-item label="Notes">
+          <div class="flex w-100">
+            <el-input v-model="selectedRow.notes" type="textarea" rows="20" class="notes-input"></el-input>
+            <markdown-renderer :markdown="selectedRow.notes" class="notes-preview"> </markdown-renderer>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
   </el-dialog>
 </template>
 
@@ -361,5 +375,9 @@ const copyAll = (type: string) => {
   &:hover {
     background-color: var(--el-fill-color-light);
   }
+}
+
+.entry-input-number {
+  width: 100% !important;
 }
 </style>

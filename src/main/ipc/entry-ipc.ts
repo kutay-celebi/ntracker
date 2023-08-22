@@ -12,13 +12,14 @@ ipcMain.handle('db.entry.save', async (_event, args) => {
     if (!obj.id) {
       entry = await Entry.findOrCreate({
         where: where(fn('lower', col('label')), obj.label.toLowerCase()),
-        defaults: { label: obj.label, notes: obj.notes }
+        defaults: { label: obj.label, notes: obj.notes, estimation: obj.estimation }
       })
     } else {
       entry = await Entry.upsert({
         id: obj.id,
         label: obj.label,
-        notes: obj.notes
+        notes: obj.notes,
+        estimation: obj.estimation
       })
     }
 

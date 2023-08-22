@@ -48,10 +48,6 @@ onBeforeMount(async () => {
 <style lang="less">
 @import './assets/css/styles.less';
 
-.el-input-number {
-  width: 100% !important;
-}
-
 .el-table__footer .cell {
   //text-align: center !important;
   font-weight: bold;
