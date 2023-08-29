@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import EntryReport from '@renderer/components/EntryReport.vue'
 import { computed, onMounted, ref, toRaw } from 'vue'
-import { EntryDO } from '../../../main/db/types/Entry'
-import { EntryTimelogDO } from '../../../main/db/types/EntryTimelog'
+import { EntryDO } from '@main/db/types/Entry'
+import { EntryTimelogDO } from '@main/db/types/EntryTimelog'
 import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
 import IconoirTrash from '~icons/iconoir/trash'
-import { EntryListQuery } from '../../../main/db/types/EntryListQuery'
+import { EntryListQuery } from '@main/db/types/EntryListQuery'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
 import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
@@ -13,6 +13,7 @@ import IconoirPageEdit from '~icons/iconoir/page-edit'
 import TimerButton from '@renderer/components/TimerButton.vue'
 import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
 import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
+import RiErrorWarningFill from '~icons/ri/error-warning-fill'
 
 const settings = useSettingsStore()
 
@@ -43,10 +44,6 @@ onMounted(async () => {
 })
 
 const addEntry = async () => {
-  if (entries.value.some((e) => e.id === entry.value.id || searchEntry.value === e.label)) {
-    return
-  }
-
   const timelogs: EntryTimelogDO[] = []
   entry.value.label = searchEntry.value.trim()
 
@@ -56,7 +53,10 @@ const addEntry = async () => {
     date = date.add(1, 'days')
   }
 
-  entries.value.push({ ...entry.value, timelogs: timelogs })
+  if (!entries.value.some((e) => e.id === entry.value.id || searchEntry.value === e.label)) {
+    entries.value.push({ ...entry.value, timelogs: timelogs })
+  }
+
   await saveAll()
 }
 
@@ -65,7 +65,7 @@ const saveAll = async () => {
     isUnsavedChange.value = false
     await getAllEntries()
     searchEntry.value = ''
-    entry.value = { label: '' }
+    entry.value = { label: '', estimation: 0 }
   })
 }
 
@@ -146,7 +146,7 @@ const queryAutoComplete = async (text: string, cb: any) => {
       if (toBeSelected) {
         selectEntry(toBeSelected)
       } else {
-        entry.value = { label: '' }
+        entry.value = { label: '', estimation: 0 }
       }
     }
     cb(resp)
@@ -285,7 +285,19 @@ const copyAll = (type: string) => {
       :class="[{ 'dense-table': settings.timesheet.denseTable }, 'entry-table']"
       @current-change="selectRow"
     >
-      <el-table-column label="Entry" prop="label" min-width="100px" />
+      <el-table-column label="Entry" prop="label" min-width="100px">
+        <template #default="{ row }">
+          <div>
+            {{ row.label }}
+            <el-tooltip v-if="row.estimation && row.totalDuration > row.estimation">
+              <ri-error-warning-fill class="text-warning" />
+              <template #content>
+                Estimated time exceeded. ({{ row.totalDuration }}hr / {{ row.estimation }}hr)
+              </template>
+            </el-tooltip>
+          </div>
+        </template>
+      </el-table-column>
 
       <el-table-column
         v-for="col in columns"

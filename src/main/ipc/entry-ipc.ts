@@ -64,6 +64,12 @@ ipcMain.handle('db.entry.queryEntries', async (_event, args: EntryListQuery) => 
 
   const mappedEntries: EntryDO[] = entries.map((e) => e.get({ plain: true }))
 
+  for (const entry of mappedEntries) {
+    await EntryTimelog.sum('duration', { where: { entry_id: entry.id } }).then((resp) => {
+      entry.totalDuration = resp
+    })
+  }
+
   return Promise.resolve(mappedEntries)
 })
 
