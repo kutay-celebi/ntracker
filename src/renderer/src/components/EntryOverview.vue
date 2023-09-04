@@ -29,7 +29,7 @@ const prepareReport = async () => {
 </script>
 
 <template>
-  <el-card header="Report">
+  <el-card header="Overview">
     <div v-if="entryReport">
       <markdown-renderer v-if="entryReport.notes" :markdown="entryReport.notes" />
 

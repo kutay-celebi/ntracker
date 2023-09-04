@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import EntryReport from '@renderer/components/EntryReport.vue'
 import { computed, onMounted, ref, toRaw } from 'vue'
 import { EntryDO } from '@main/db/types/Entry'
 import { EntryTimelogDO } from '@main/db/types/EntryTimelog'
@@ -14,6 +13,7 @@ import TimerButton from '@renderer/components/TimerButton.vue'
 import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
 import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
 import RiErrorWarningFill from '~icons/ri/error-warning-fill'
+import EntryOverview from '@renderer/components/EntryOverview.vue'
 
 const settings = useSettingsStore()
 
@@ -362,7 +362,7 @@ const copyAll = (type: string) => {
     </el-table>
   </el-card>
 
-  <entry-report :entry="selectedRow" />
+  <entry-overview :entry="selectedRow" />
   <el-dialog v-model="showDetail" width="80%" :title="selectedRow?.label" @close="onNoteSave">
     <div v-if="selectedRow">
       <el-form label-position="top">
