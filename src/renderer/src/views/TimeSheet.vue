@@ -17,6 +17,7 @@ import RiErrorWarningFill from '~icons/ri/error-warning-fill'
 
 const settings = useSettingsStore()
 
+const isNewEntry = ref(true)
 const entry = ref<EntryDO>({ label: '', notes: '', estimation: 0 })
 const isUnsavedChange = ref(false)
 const selectedDate = ref<Date>(new Date())
@@ -43,6 +44,12 @@ onMounted(async () => {
   await getAllEntries()
 })
 
+const resetState = () => {
+  searchEntry.value = ''
+  entry.value = { label: '', estimation: 0 }
+  isNewEntry.value = true
+}
+
 const addEntry = async () => {
   const timelogs: EntryTimelogDO[] = []
   entry.value.label = searchEntry.value.trim()
@@ -61,12 +68,15 @@ const addEntry = async () => {
 }
 
 const saveAll = async () => {
-  await window.api.saveEntry(toRaw(entries.value)).then(async () => {
-    isUnsavedChange.value = false
-    await getAllEntries()
-    searchEntry.value = ''
-    entry.value = { label: '', estimation: 0 }
-  })
+  await window.api
+    .saveEntry(toRaw(entries.value))
+    .then(async () => {
+      isUnsavedChange.value = false
+    })
+    .finally(async () => {
+      await getAllEntries()
+      resetState()
+    })
 }
 
 const removeEntry = () => {
@@ -137,9 +147,11 @@ const setUnsavedChangeTrue = () => {
 
 const selectEntry = async (item: EntryDO) => {
   entry.value = item
+  isNewEntry.value = false
 }
 
 const queryAutoComplete = async (text: string, cb: any) => {
+  isNewEntry.value = true
   await fetchEntries({ label: text }).then((resp) => {
     if (settings.timesheet.forceLabel) {
       const toBeSelected = resp.find((entry) => entry.label.toLowerCase() === text.trim().toLowerCase())
@@ -191,7 +203,7 @@ const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
 }
 
 const copyAll = (type: string) => {
-  let clipboard
+  let clipboard = ''
   if (type === 'entry-comma') {
     clipboard = entries.value.map((e) => e.label).join(',')
   } else if (type === 'all-table') {
@@ -230,11 +242,11 @@ const copyAll = (type: string) => {
         </el-autocomplete>
       </el-form-item>
 
-      <el-form-item label="Estimation">
+      <el-form-item v-if="isNewEntry" label="Estimation">
         <el-input-number v-model="entry.estimation" :min="0" :controls="false"></el-input-number>
       </el-form-item>
 
-      <el-form-item label="Notes">
+      <el-form-item v-if="isNewEntry" label="Notes">
         <el-input
           v-model="entry.notes"
           type="textarea"
@@ -242,7 +254,9 @@ const copyAll = (type: string) => {
           placeholder="Markdown is available"
         ></el-input>
       </el-form-item>
-      <el-button @click="addEntry">Add</el-button>
+      <el-button :type="isNewEntry ? 'success' : 'primary'" @click="addEntry">
+        {{ isNewEntry ? 'Add New' : 'Add' }}
+      </el-button>
     </el-form>
   </el-card>
 
@@ -323,6 +337,7 @@ const copyAll = (type: string) => {
               :min="0"
               class="entry-input-number"
               @input="setUnsavedChangeTrue"
+              @keydown.enter="saveAll"
             ></el-input-number>
           </div>
         </template>
