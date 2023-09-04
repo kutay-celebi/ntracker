@@ -1,10 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { Entry, EntryDO } from '../main/db/types/Entry'
-import { EntryListQuery } from '../main/db/types/EntryListQuery'
-import { EntryReportDO } from '../main/db/types/EntryReportDO'
-import { TodoDO, TodoListQuery } from '../main/db/types/Todo'
-import { NTrackerEnv } from '../main/env'
+import { Entry, EntryDO, EntryOverviewDO } from '@main/db/types/Entry'
+import { EntryListQuery } from '@main/db/types/EntryListQuery'
+import { EntryReportDO } from '@main/db/types/EntryReportDO'
+import { TodoDO, TodoListQuery } from '@main/db/types/Todo'
+import { NTrackerEnv } from '@main/env'
 import { UpdateCheckResult } from 'electron-updater'
 
 // Custom APIs for renderer
@@ -19,8 +19,15 @@ export const api = {
   queryEntries: (query?: EntryListQuery): Promise<Entry[]> => {
     return ipcRenderer.invoke('db.entry.queryEntries', query)
   },
+  /**
+   * @deprecated
+   * @param id
+   */
   getEntryReport: (id: string): Promise<EntryReportDO> => {
     return ipcRenderer.invoke('db.entry.getEntryReport', id)
+  },
+  getEntryOverview: (id: string): Promise<EntryOverviewDO> => {
+    return ipcRenderer.invoke('db.entry.getEntryOverview', id)
   },
   removeTimelogsByIds: (ids: string[]): Promise<void> => {
     return ipcRenderer.invoke('db.entry-timelog.removeTimeLogsByIds', ids)

@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Entry, EntryDO } from '../db/types/Entry'
+import { Entry, EntryDO, EntryOverviewDO } from '../db/types/Entry'
 import { EntryListQuery } from '../db/types/EntryListQuery'
 import { EntryReportDO } from '../db/types/EntryReportDO'
 import { EntryTimelog } from '../db/types/EntryTimelog'
@@ -92,4 +92,19 @@ ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {
   })
 
   return Promise.resolve(report)
+})
+
+ipcMain.handle('db.entry.getEntryOverview', async (_event, args: string) => {
+  const entry = await Entry.findByPk(args)
+
+  if (!entry) {
+    return Promise.resolve()
+  }
+
+  const response: EntryOverviewDO = { label: entry.label, notes: entry.notes, estimation: entry.estimation, spent: 0 }
+  await EntryTimelog.sum('duration', { where: { entry_id: entry.id } }).then((resp) => {
+    response.spent = resp.valueOf() ?? 0
+  })
+
+  return Promise.resolve(response)
 })

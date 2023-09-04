@@ -18,3 +18,10 @@ export interface EntryDO extends BaseDO {
   totalDuration?: number
   estimation?: number
 }
+
+export type EntryOverviewDO = {
+  label: string
+  notes: string | undefined
+  estimation: number
+  spent: number
+}
