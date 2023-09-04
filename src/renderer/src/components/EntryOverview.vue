@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { EntryReportDO } from '../../../main/db/types/EntryReportDO'
-import { PropType, ref, watch } from 'vue'
+import { computed, PropType, ref, watch } from 'vue'
 import { EntryDO } from '../../../main/db/types/Entry'
 import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
 
@@ -10,6 +10,9 @@ const props = defineProps({
   }
 })
 const entryReport = ref<EntryReportDO>()
+const title = computed(() => {
+  return props.entry ? props.entry.label : 'Overview'
+})
 
 watch(
   () => [props.entry],
@@ -29,7 +32,7 @@ const prepareReport = async () => {
 </script>
 
 <template>
-  <el-card header="Overview">
+  <el-card :header="title">
     <div v-if="entryReport">
       <markdown-renderer v-if="entryReport.notes" :markdown="entryReport.notes" />
 
