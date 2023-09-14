@@ -20,6 +20,7 @@ export interface EntryDO extends BaseDO {
 }
 
 export type EntryOverviewDO = {
+  id: string
   label: string
   notes: string | undefined
   estimation: number

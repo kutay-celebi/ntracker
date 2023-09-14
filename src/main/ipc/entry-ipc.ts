@@ -97,11 +97,17 @@ ipcMain.handle('db.entry.getEntryReport', async (_event, args: string) => {
 ipcMain.handle('db.entry.getEntryOverview', async (_event, args: string) => {
   const entry = await Entry.findByPk(args)
 
-  if (!entry) {
+  if (!entry || !entry.id) {
     return Promise.resolve()
   }
 
-  const response: EntryOverviewDO = { label: entry.label, notes: entry.notes, estimation: entry.estimation, spent: 0 }
+  const response: EntryOverviewDO = {
+    id: entry.id,
+    label: entry.label,
+    notes: entry.notes,
+    estimation: entry.estimation,
+    spent: 0
+  }
   await EntryTimelog.sum('duration', { where: { entry_id: entry.id } }).then((resp) => {
     response.spent = resp.valueOf() ?? 0
   })

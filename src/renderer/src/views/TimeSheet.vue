@@ -2,13 +2,11 @@
 import { computed, onMounted, ref, toRaw } from 'vue'
 import { EntryDO } from '@main/db/types/Entry'
 import { EntryTimelogDO } from '@main/db/types/EntryTimelog'
-import IconoirSaveFloppyDisk from '~icons/iconoir/save-floppy-disk'
+import RiSave3Line from '~icons/ri/save-3-line'
 import IconoirTrash from '~icons/iconoir/trash'
 import { EntryListQuery } from '@main/db/types/EntryListQuery'
 import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
-import MarkdownRenderer from '@renderer/components/MarkdownRenderer.vue'
-import IconoirPageEdit from '~icons/iconoir/page-edit'
 import TimerButton from '@renderer/components/TimerButton.vue'
 import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
 import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
@@ -17,6 +15,7 @@ import EntryOverview from '@renderer/components/EntryOverview.vue'
 
 const settings = useSettingsStore()
 
+const isLoading = ref(false)
 const isNewEntry = ref(true)
 const entry = ref<EntryDO>({ label: '', notes: '', estimation: 0 })
 const isUnsavedChange = ref(false)
@@ -138,7 +137,7 @@ const removeTimeLogs = async (entry: EntryDO) => {
 }
 
 const selectRow = (val: EntryDO) => {
-  selectedRow.value = val
+  selectedRow.value = { ...toRaw(val) }
 }
 
 const setUnsavedChangeTrue = () => {
@@ -166,9 +165,9 @@ const queryAutoComplete = async (text: string, cb: any) => {
 }
 
 const getAllEntries = async () => {
-  entries.value = []
-  await fetchEntries({ timeRange: [columns.value[0].props, columns.value[columns.value.length - 1].props] }).then(
-    (resp: EntryDO[]) => {
+  isLoading.value = true
+  await fetchEntries({ timeRange: [columns.value[0].props, columns.value[columns.value.length - 1].props] })
+    .then((resp: EntryDO[]) => {
       if (!resp) {
         return
       }
@@ -185,21 +184,22 @@ const getAllEntries = async () => {
       })
 
       entries.value = resp
-    }
-  )
-}
-
-const showDetail = ref(false)
-const openDetail = () => {
-  showDetail.value = true
-}
-
-const onNoteSave = () => {
-  saveAll()
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
 }
 
 const fetchEntries = async (query?: EntryListQuery): Promise<EntryDO[]> => {
   return await window.api.queryEntries(query)
+}
+
+const onEntrySave = async () => {
+  if (selectedRow.value) {
+    await window.api.saveEntry([toRaw(selectedRow.value)]).then(async () => {
+      await getAllEntries()
+    })
+  }
 }
 
 const copyAll = (type: string) => {
@@ -233,6 +233,7 @@ const copyAll = (type: string) => {
           :fetch-suggestions="queryAutoComplete"
           fit-input-width
           value-key="label"
+          clearable
           class="w-100"
           @select="selectEntry"
         >
@@ -240,19 +241,6 @@ const copyAll = (type: string) => {
             <div class="w-100">{{ item.label }}</div>
           </template>
         </el-autocomplete>
-      </el-form-item>
-
-      <el-form-item v-if="isNewEntry" label="Estimation">
-        <el-input-number v-model="entry.estimation" :min="0" :controls="false"></el-input-number>
-      </el-form-item>
-
-      <el-form-item v-if="isNewEntry" label="Notes">
-        <el-input
-          v-model="entry.notes"
-          type="textarea"
-          resize="vertical"
-          placeholder="Markdown is available"
-        ></el-input>
       </el-form-item>
       <el-button :type="isNewEntry ? 'success' : 'primary'" @click="addEntry">
         {{ isNewEntry ? 'Add New' : 'Add' }}
@@ -262,7 +250,7 @@ const copyAll = (type: string) => {
 
   <el-card class="mb-2">
     <el-button :type="isUnsavedChange ? `warning` : `success`" @click="saveAll">
-      <iconoir-save-floppy-disk />
+      <ri-save3-line />
       <span v-if="isUnsavedChange">There are unsaved changes!</span>
     </el-button>
 
@@ -291,6 +279,7 @@ const copyAll = (type: string) => {
     <el-date-picker v-model="selectedDate" class="float-right" @change="getAllEntries"></el-date-picker>
     <el-table
       v-model:data="entries"
+      v-loading=""
       width="100%"
       show-summary
       :summary-method="getSumOfColumn"
@@ -357,27 +346,11 @@ const copyAll = (type: string) => {
             <iconoir-trash class="action-icon remove-icon clickable" />
           </template>
         </el-popconfirm>
-        <iconoir-page-edit class="action-icon clickable" @click="() => openDetail()" />
       </el-table-column>
     </el-table>
   </el-card>
 
-  <entry-overview :entry="selectedRow" />
-  <el-dialog v-model="showDetail" width="80%" :title="selectedRow?.label" @close="onNoteSave">
-    <div v-if="selectedRow">
-      <el-form label-position="top">
-        <el-form-item label="Estimation">
-          <el-input-number v-model="selectedRow.estimation" :min="0" :controls="false"></el-input-number>
-        </el-form-item>
-        <el-form-item label="Notes">
-          <div class="flex w-100">
-            <el-input v-model="selectedRow.notes" type="textarea" rows="20" class="notes-input"></el-input>
-            <markdown-renderer :markdown="selectedRow.notes" class="notes-preview"> </markdown-renderer>
-          </div>
-        </el-form-item>
-      </el-form>
-    </div>
-  </el-dialog>
+  <entry-overview v-model="selectedRow" @save="onEntrySave" />
 </template>
 
 <style scoped lang="less">
