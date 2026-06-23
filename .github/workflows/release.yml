@@ -6,88 +6,10 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  win-build:
-    name: Windows Build
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm run build && electron-builder --win --config --publish never
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: win-artifacts
-          path: |
-            dist/*.exe
-            dist/*.yml
-
-  mac-build:
-    name: MacOS Build
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm run build && electron-builder --mac --config --publish never
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: mac-artifacts
-          path: |
-            dist/*.dmg
-            dist/*.zip
-            dist/*.blockmap
-            dist/*.yml
-
-  linux-build:
-    name: Linux Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm run build && electron-builder --linux --config --publish never
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-artifacts
-          path: |
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.blockmap
-            dist/*.yml
 
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [win-build, mac-build, linux-build]
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -108,19 +30,75 @@ jobs:
           awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | head -n -1 | tail -n +2 > release_notes.txt
           cat release_notes.txt
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          merge-multiple: true
-
       - name: Create Draft Release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           body_path: release_notes.txt
           tag_name: ${{ github.ref_name }}
-          files: artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+
+  win-build:
+    name: Windows Build
+    runs-on: windows-latest
+    needs: create-release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy
+        run: pnpm run deploy:win
+        env:
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+  mac-build:
+    name: MacOS Build
+    runs-on: macos-latest
+    needs: create-release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy
+        run: pnpm run deploy:mac
+        env:
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+  linux-build:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    needs: create-release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy
+        run: pnpm run deploy:linux
+        env:
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
