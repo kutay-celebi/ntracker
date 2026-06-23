@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-06-23
+### Added
+- **Week Navigation Buttons** — Previous and next week buttons added alongside the date picker on the timesheet for faster week navigation.
+
+### Changed
+- **Delete Entry** — The delete entry button has been moved from the toolbar to the entry detail panel.
+- **Time Log Delete Warning** — The confirmation message for deleting time logs in the table now clearly states that only the time logs will be deleted, not the entry itself.
+
 ## [1.4.1] - 2026-06-23
 ### Fixed
 - The issue where the timer would disappear when changing the week on the timesheet has been fixed
@@ -67,7 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix seed and migration
 
-[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/kutay-celebi/ntracker/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/kutay-celebi/ntracker/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/kutay-celebi/ntracker/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/kutay-celebi/ntracker/compare/v1.2.0...v1.3.0
