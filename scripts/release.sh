@@ -26,11 +26,11 @@ fi
 
 echo "Releasing v$VERSION..."
 
-# Move [Unreleased] to versioned section in CHANGELOG.md
-pnpm kacl release "$VERSION"
-
-# Update version in package.json without creating a git tag
+# Update version in package.json first (kacl release reads version from here)
 npm version "$VERSION" --no-git-tag-version
+
+# Move [Unreleased] to versioned section using version from package.json
+pnpm kacl release
 
 echo ""
 echo "Changes staged. Review with: git diff"
