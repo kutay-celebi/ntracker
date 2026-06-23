@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-06-23
+### Fixed
+- The issue where the timer would disappear when changing the week on the timesheet has been fixed
+
 ## [1.4.0] - 2026-06-23
 ### Added
 - **Floating Timer Window** — A new floating window that keeps the timer always accessible, making it easier to track time without switching views.
@@ -63,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix seed and migration
 
-[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/kutay-celebi/ntracker/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/kutay-celebi/ntracker/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/kutay-celebi/ntracker/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/kutay-celebi/ntracker/compare/v1.1.2...v1.2.0
