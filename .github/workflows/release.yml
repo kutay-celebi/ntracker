@@ -29,7 +29,11 @@ jobs:
         id: changelog
         run: |
           VERSION="${{ github.ref_name }}"
-          awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | head -n -1 | tail -n +2 > release_notes.txt
+          awk "
+            /^## \[${VERSION}\]/ { found=1; next }
+            found && /^## \[/    { exit }
+            found                { print }
+          " CHANGELOG.md > release_notes.txt
           cat release_notes.txt
 
       - name: Create Draft Release

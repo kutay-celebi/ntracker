@@ -37,7 +37,7 @@ const columns = computed(() => {
   return cols
 })
 
-const isToday = computed(() => dayjs(selectedDate.value).startOf('days').isSame(dayjs().startOf('days')))
+const isToday = computed(() => dayjs().isSame(dayjs(selectedDate.value), 'week'))
 
 onMounted(async () => {
   await getAllEntries()
