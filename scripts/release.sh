@@ -26,17 +26,24 @@ fi
 
 echo "Releasing v$VERSION..."
 
+# Read current version before bumping (needed for README update)
+OLD_VERSION=$(node -p "require('./package.json').version")
+
 # Update version in package.json first (kacl release reads version from here)
 npm version "$VERSION" --no-git-tag-version
 
 # Move [Unreleased] to versioned section using version from package.json
 pnpm kacl release
 
+# Update download URLs in README.md
+sed -i '' "s/$OLD_VERSION/$VERSION/g" README.md
+echo "README.md updated: $OLD_VERSION → $VERSION"
+
 echo ""
 echo "Changes staged. Review with: git diff"
 echo ""
 echo "When ready, run:"
-echo "  git add CHANGELOG.md package.json pnpm-lock.yaml"
+echo "  git add CHANGELOG.md package.json pnpm-lock.yaml README.md"
 echo "  git commit -m \"release: v$VERSION\""
 echo "  git tag $VERSION"
 echo "  git push && git push --tags"
