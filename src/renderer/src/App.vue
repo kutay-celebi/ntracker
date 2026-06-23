@@ -2,6 +2,8 @@
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import IconoirAlarm from '~icons/iconoir/alarm'
 import IconoirSettings from '~icons/iconoir/settings'
+import IconoirReports from '~icons/iconoir/reports'
+import IconoirStatsUpSquare from '~icons/iconoir/stats-up-square'
 import { onBeforeMount } from 'vue'
 import { useSettingsStore } from '@renderer/store/settigs'
 
@@ -25,6 +27,12 @@ onBeforeMount(async () => {
         </el-menu-item>
         <el-menu-item index="/todo">
           <iconoir-check-circle />
+        </el-menu-item>
+        <el-menu-item index="/report">
+          <iconoir-reports />
+        </el-menu-item>
+        <el-menu-item index="/entry-report">
+          <iconoir-stats-up-square />
         </el-menu-item>
         <el-menu-item index="/settings">
           <iconoir-settings />

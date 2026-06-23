@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import './ipc'
 import './db'
 import { initializeDB } from './db/db'
+import { initStore } from './settings'
 import { nTrackerEnv, setupEnv } from './env'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
@@ -24,6 +25,9 @@ async function initializeApp(): Promise<void> {
   log.transports.file.level = 'info'
   log.transports.file.resolvePath = (): string => nTrackerEnv.logFile
 
+  // initialize store.
+  await initStore()
+
   // initialize db.
   await initializeDB()
 }
@@ -37,6 +41,8 @@ async function createWindow(): Promise<void> {
   const mainWindow = new BrowserWindow({
     width: Math.round(size.width * 0.75),
     height: Math.round(size.height * 0.8),
+    minWidth: 800,
+    minHeight: 600,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),

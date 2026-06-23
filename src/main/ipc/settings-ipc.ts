@@ -1,16 +1,16 @@
 import { ipcMain, shell } from 'electron'
 import log from 'electron-log'
-import store from '../settings'
+import { getStore } from '../settings'
 import { autoUpdater, UpdateCheckResult } from 'electron-updater'
 import { nTrackerEnv } from '../env'
 
 ipcMain.on('app.settings.setSetting', (_event, args) => {
   log.debug(`${args.key} is set to ${args.value}`)
-  store.set(args.key, args.value)
+  getStore().set(args.key, args.value)
 })
 
 ipcMain.handle('app.settings.getAllSettings', () => {
-  return store.store
+  return getStore().store
 })
 
 ipcMain.handle('app.settings.getEnvs', () => {

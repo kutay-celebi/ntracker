@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, toRaw } from 'vue'
+import { computed, onMounted, reactive, ref, toRaw } from 'vue'
 import { EntryDO } from '@main/db/types/Entry'
 import { EntryTimelogDO } from '@main/db/types/EntryTimelog'
 import RiSave3Line from '~icons/ri/save-3-line'
@@ -42,6 +42,28 @@ const isToday = computed(() => dayjs(selectedDate.value).startOf('days').isSame(
 onMounted(async () => {
   await getAllEntries()
 })
+
+const rawInputs = reactive<Record<string, string>>({})
+const timelogKey = (tl: EntryTimelogDO): string => `${tl.entry_id}-${+tl.date}`
+
+const formatDuration = (val: number): string => {
+  if (!val || val <= 0) return '0:00'
+  const h = Math.floor(val)
+  const m = Math.round((val - h) * 60)
+  return `${h}:${String(m).padStart(2, '0')}`
+}
+
+const parseDuration = (val: string): number => {
+  if (!val || val.trim() === '') return 0
+  const trimmed = val.trim()
+  if (trimmed.includes(':')) {
+    const [hStr, mStr] = trimmed.split(':')
+    const h = parseInt(hStr) || 0
+    const m = parseInt(mStr) || 0
+    return h + m / 60
+  }
+  return parseFloat(trimmed) || 0
+}
 
 const resetState = () => {
   searchEntry.value = ''
@@ -112,13 +134,13 @@ const getSumOfColumn = ({ columns: cols, data }) => {
         entry.timelogs.filter((tl) => dayjs(tl.date).startOf('days').isSame(startOf)).map((val) => val.duration)
       )
       .reduce((val1, val2) => val1 + val2, 0)
-    sums[index] = rowSum
+    sums[index] = formatDuration(rowSum)
     total += rowSum
 
     startOf = startOf.add(1, 'days')
   })
 
-  sums[sums.length - 3] = total
+  sums[sums.length - 3] = formatDuration(total)
 
   return sums
 }
@@ -202,6 +224,10 @@ const onEntrySave = async () => {
   }
 }
 
+const isColumnToday = (col: { props: Date }): boolean => {
+  return dayjs(col.props).isSame(dayjs(), 'day')
+}
+
 const copyAll = (type: string) => {
   let clipboard = ''
   if (type === 'entry-comma') {
@@ -276,7 +302,13 @@ const copyAll = (type: string) => {
       </div>
     </el-popover>
 
-    <el-date-picker v-model="selectedDate" class="float-right" @change="getAllEntries"></el-date-picker>
+    <el-date-picker
+      v-model="selectedDate"
+      type="week"
+      format="[Week] ww, YYYY"
+      class="float-right"
+      @change="getAllEntries"
+    ></el-date-picker>
     <el-table
       v-model:data="entries"
       v-loading=""
@@ -307,32 +339,33 @@ const copyAll = (type: string) => {
         :key="col.label"
         :label="col.label"
         :prop="col.label"
-        :width="settings.timesheet.denseTable ? '50px' : '80px'"
+        :width="settings.timesheet.denseTable ? '60px' : '80px'"
+        :class-name="isColumnToday(col) ? 'today-col' : ''"
+        :label-class-name="isColumnToday(col) ? 'today-col-header' : ''"
       >
         <template #default="scope">
-          <div>
-            <el-input-number
-              v-if="scope.row && scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime())"
-              v-model="scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime()).duration"
-              :class="[
-                {
-                  'filled-timelog':
-                    scope.row.timelogs.find((val) => val.date.getTime() === col.props.getTime()).duration > 0
-                }
-              ]"
-              :controls="false"
-              size="small"
-              :max="24"
-              :min="0"
+          <template
+            v-for="(timelog, i) in [scope.row?.timelogs?.find((val) => val.date.getTime() === col.props.getTime())]"
+            :key="i"
+          >
+            <el-input
+              v-if="timelog"
+              :model-value="rawInputs[timelogKey(timelog)] ?? formatDuration(timelog.duration)"
+              :class="{ 'filled-timelog': timelog.duration > 0 }"
               class="entry-input-number"
-              @input="setUnsavedChangeTrue"
-              @keydown.enter="saveAll"
-            ></el-input-number>
-          </div>
+              @input="(val: string) => { rawInputs[timelogKey(timelog)] = val }"
+              @change="(val: string) => { delete rawInputs[timelogKey(timelog)]; timelog.duration = parseDuration(val); setUnsavedChangeTrue() }"
+              @keydown.enter="(e: Event) => { const v = (e.target as HTMLInputElement).value; delete rawInputs[timelogKey(timelog)]; timelog.duration = parseDuration(v); setUnsavedChangeTrue(); saveAll() }"
+            />
+          </template>
         </template>
       </el-table-column>
 
-      <el-table-column prop="sum" label="SUM" width="50px" />
+      <el-table-column prop="sum" label="SUM" width="90px">
+        <template #default="{ row }">
+          {{ formatDuration(row.sum) }}
+        </template>
+      </el-table-column>
 
       <el-table-column label="Timer" width="100px">
         <template #default="{ $index }">
@@ -379,5 +412,21 @@ const copyAll = (type: string) => {
 
 .entry-input-number {
   width: 100% !important;
+
+  :deep(input) {
+    text-align: center;
+  }
+}
+</style>
+
+<style lang="less">
+.today-col {
+  background-color: var(--el-fill-color-light) !important;
+}
+
+.today-col-header {
+  background-color: var(--el-fill-color) !important;
+  font-weight: 700 !important;
+  color: var(--el-color-primary) !important;
 }
 </style>

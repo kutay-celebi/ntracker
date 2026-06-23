@@ -10,6 +10,8 @@ import TimeSheet from '@renderer/views/TimeSheet.vue'
 import Todo from '@renderer/views/Todo.vue'
 import { createPinia } from 'pinia'
 import AppSettings from '@renderer/views/AppSettings.vue'
+import Report from '@renderer/views/Report.vue'
+import EntryReport from '@renderer/views/EntryReport.vue'
 import 'highlight.js/styles/github.css'
 
 dayjs.extend(utc)
@@ -38,6 +40,14 @@ const router = createRouter({
         {
           path: '/settings',
           component: AppSettings
+        },
+        {
+          path: '/report',
+          component: Report
+        },
+        {
+          path: '/entry-report',
+          component: EntryReport
         }
       ]
     }

@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { computed, PropType, ref, watch } from 'vue'
-import { useStopwatch } from 'vue-timer-hook'
+import { computed, onMounted, onUnmounted, PropType, ref } from 'vue'
 import dayjs from 'dayjs'
 import { EntryDO } from '../../../main/db/types/Entry'
 import RiPlayCircleLine from '~icons/ri/play-circle-line'
 import RiPauseCircleLine from '~icons/ri/pause-circle-line'
 import RiStopCircleLine from '~icons/ri/stop-circle-line'
+
+interface TimerState {
+  isRunning: boolean
+  label: string
+  elapsed: string
+  elapsedSeconds: number
+  entryId: string | undefined
+}
 
 const emits = defineEmits(['update:modelValue', 'addDuration'])
 const props = defineProps({
@@ -24,70 +31,147 @@ const internalModel = computed({
   }
 })
 
-const currentDuration = ref()
-const timer = useStopwatch(0, false)
-
-const timerButtonText = computed(() => {
-  return timer.days.value * 24 + timer.hours.value + ':' + timer.minutes.value + ':' + timer.seconds.value
+// ── Timer state received from main process ────────────────────────────────────
+const timerState = ref<TimerState>({
+  isRunning: false,
+  label: '',
+  elapsed: '0:00:00',
+  elapsedSeconds: 0,
+  entryId: undefined
 })
 
-watch(
-  () => timer,
-  (val) => {
-    if (!val.isRunning.value) {
-      return
-    }
-    if (val.hours.value === 0 && val.minutes.value == 0 && val.seconds.value === 0) {
-      currentDuration.value = 0
-    } else {
-      currentDuration.value = val.days.value * 24 + val.hours.value + (Math.floor(val.minutes.value / 15) + 1) * 0.25
-    }
-  },
-  {
-    deep: true
-  }
-)
+const isMyTimer = computed(() => !!props.modelValue?.id && timerState.value.entryId === props.modelValue.id)
+const isRunning = computed(() => isMyTimer.value && timerState.value.isRunning)
+const hasDuration = computed(() => isMyTimer.value && timerState.value.elapsedSeconds > 0)
+const displayElapsed = computed(() => (isMyTimer.value ? timerState.value.elapsed : '0:00:00'))
+// Hide timer controls for other rows when any timer is active
+const isOtherTimerActive = computed(() => timerState.value.entryId !== undefined && !isMyTimer.value)
 
+const currentDuration = computed(() => {
+  if (!isMyTimer.value) return 0
+  return Math.ceil(timerState.value.elapsedSeconds / 60) / 60
+})
+
+// ── Dialog state ──────────────────────────────────────────────────────────────
+const dialogVisible = ref(false)
+const selectedTargetDateTs = ref<number>(dayjs().startOf('days').valueOf())
+const editableDuration = ref<string>('')
+
+const availableDates = computed(() => {
+  if (!internalModel.value?.timelogs) return []
+  return internalModel.value.timelogs.map((tl) => ({
+    label: dayjs(tl.date).format('ddd, DD MMM'),
+    value: dayjs(tl.date).startOf('days').valueOf()
+  }))
+})
+
+const formatDuration = (val: number): string => {
+  if (!val || val <= 0) return '0:00'
+  const h = Math.floor(val)
+  const m = Math.round((val - h) * 60)
+  return `${h}:${String(m).padStart(2, '0')}`
+}
+
+const parseDuration = (val: string): number => {
+  if (!val || val.trim() === '') return 0
+  const trimmed = val.trim()
+  if (trimmed.includes(':')) {
+    const [hStr, mStr] = trimmed.split(':')
+    const h = parseInt(hStr) || 0
+    const m = parseInt(mStr) || 0
+    return h + m / 60
+  }
+  return parseFloat(trimmed) || 0
+}
+
+// ── Timer controls ────────────────────────────────────────────────────────────
 const toggleTimer = (): void => {
-  if (timer.isRunning.value) {
-    timer.pause()
+  if (!props.modelValue?.id) return
+  if (isRunning.value) {
+    window.api.timerPause()
+  } else if (isMyTimer.value) {
+    window.api.timerResume()
   } else {
-    timer.start()
+    window.api.timerStart(props.modelValue.label, props.modelValue.id)
   }
 }
 
-const resetTimer = (): void => {
-  timer.reset(0, false)
-  currentDuration.value = 0
+const openAddDialog = (): void => {
+  if (!isMyTimer.value || timerState.value.elapsedSeconds === 0) return
+  if (timerState.value.isRunning) {
+    window.api.timerPause()
+  }
+  editableDuration.value = formatDuration(currentDuration.value)
+  const todayTs = dayjs().startOf('days').valueOf()
+  const dates = availableDates.value.map((d) => d.value)
+  selectedTargetDateTs.value = dates.includes(todayTs) ? todayTs : dates[0] ?? todayTs
+  dialogVisible.value = true
 }
 
-const addDuration = () => {
-  if (!internalModel.value || !internalModel.value.timelogs) {
-    return
-  }
-
+const confirmAdd = (): void => {
+  if (!internalModel.value || !internalModel.value.timelogs) return
+  const duration = parseDuration(editableDuration.value)
   internalModel.value.timelogs.forEach((tl) => {
-    if (dayjs(tl.date).isSame(dayjs().startOf('days'))) {
-      tl.duration = tl.duration + currentDuration.value
+    if (dayjs(tl.date).startOf('days').valueOf() === selectedTargetDateTs.value) {
+      tl.duration = tl.duration + duration
     }
   })
-
-  resetTimer()
+  window.api.timerReset()
+  dialogVisible.value = false
   emits('addDuration')
 }
+
+const cancelAdd = (): void => {
+  window.api.timerReset()
+  dialogVisible.value = false
+}
+
+// ── Lifecycle ─────────────────────────────────────────────────────────────────
+let unsubState: (() => void) | null = null
+let unsubDialog: (() => void) | null = null
+
+onMounted(async () => {
+  timerState.value = await window.api.timerGetState()
+  unsubState = window.api.onTimerState((s) => {
+    timerState.value = s
+  })
+  unsubDialog = window.api.onTimerOpenDialog((s) => {
+    if (s.entryId === props.modelValue?.id) {
+      openAddDialog()
+    }
+  })
+})
+
+onUnmounted(() => {
+  unsubState?.()
+  unsubDialog?.()
+})
 </script>
 
 <template>
-  <div v-if="internalModel" class="timer">
-    <ri-play-circle-line v-if="!timer.isRunning.value" class="timer-icon timer-play" @click.stop="toggleTimer" />
-    <ri-pause-circle-line v-if="timer.isRunning.value" class="timer-icon timer-pause" @click.stop="toggleTimer" />
-    <el-popconfirm v-if="currentDuration > 0" title="Do you want to add?" @confirm="addDuration" @cancel="resetTimer">
-      <template #reference>
-        <ri-stop-circle-line class="timer-icon timer-stop" @click.stop="toggleTimer" />
-      </template>
-    </el-popconfirm>
-    {{ timerButtonText }}
+  <div v-if="internalModel && !isOtherTimerActive" class="timer">
+    <ri-play-circle-line v-if="!isRunning" class="timer-icon timer-play" @click.stop="toggleTimer" />
+    <ri-pause-circle-line v-if="isRunning" class="timer-icon timer-pause" @click.stop="toggleTimer" />
+    <ri-stop-circle-line v-if="hasDuration || isRunning" class="timer-icon timer-stop" @click.stop="openAddDialog" />
+    {{ displayElapsed }}
   </div>
+
+  <el-dialog v-model="dialogVisible" title="Add Duration" width="360px" :close-on-click-modal="false" append-to-body>
+    <el-form label-position="top">
+      <el-form-item label="Day">
+        <el-select v-model="selectedTargetDateTs" style="width: 100%">
+          <el-option v-for="opt in availableDates" :key="opt.value" :label="opt.label" :value="opt.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Duration (h:mm)">
+        <el-input v-model="editableDuration" style="width: 100%" placeholder="e.g. 1:30" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="cancelAdd">Cancel</el-button>
+      <el-button type="primary" @click="confirmAdd">Add</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped lang="less">

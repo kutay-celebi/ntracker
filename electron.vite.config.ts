@@ -1,14 +1,18 @@
 import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { defineConfig } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    build: {
+      externalizeDeps: true
+    }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    build: {
+      externalizeDeps: true
+    }
   },
   renderer: {
     optimizeDeps: {
@@ -19,6 +23,14 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src'),
         '@main': resolve('src/main'),
         '@preload': resolve('src/preload')
+      }
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve('src/renderer/index.html'),
+          floating: resolve('src/renderer/floating.html')
+        }
       }
     },
     plugins: [vue(), Icons({ compiler: 'vue3' })]

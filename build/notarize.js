@@ -15,7 +15,7 @@ module.exports = async (context) => {
     return
   }
 
-  const appId = 'com.electron.app'
+  const appId = context.packager.appInfo.id
 
   const { appOutDir } = context
 
@@ -26,7 +26,7 @@ module.exports = async (context) => {
       appBundleId: appId,
       appPath: `${appOutDir}/${appName}.app`,
       appleId: process.env.APPLE_ID,
-      appleIdPassword: process.env.APPLEIDPASS
+      appleIdPassword: process.env.APPLE_ID_PASS
     })
   } catch (error) {
     console.error(error)

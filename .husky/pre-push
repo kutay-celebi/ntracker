@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  if echo "$local_ref" | grep -q '^refs/tags/'; then
+    UNRELEASED=$(awk '/^## \[Unreleased\]/{found=1; next} found && /^## \[/{exit} found && NF{print}' CHANGELOG.md)
+    if [ -n "$UNRELEASED" ]; then
+      echo "WARNING: [Unreleased] section in CHANGELOG.md still has content."
+      echo "Did you forget to run 'pnpm release <version>' before tagging?"
+      echo "Push aborted."
+      exit 1
+    fi
+  fi
+done

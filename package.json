@@ -6,16 +6,20 @@
   "main": "./out/main/index.js",
   "author": "Kutay Celebi",
   "homepage": "https://github.com/kutay-celebi/ntracker",
-  "repository": "https://github.com/kutay-celebi/ntracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kutay-celebi/ntracker"
+  },
   "scripts": {
     "format": "prettier --write .",
-    "changelog": "standard-version -t",
+    "prepare": "husky install",
+    "release": "sh scripts/release.sh",
+    "changelog:lint": "kacl lint",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
-    "lint:commit": "commitlint -e $GIT_PARAMS",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck": "npm run typecheck:node",
     "start": "electron-vite preview",
-    "dev": "electron-vite dev --sourcemap --remote-debugging-port=9229 ",
+    "dev": "electron-vite dev --sourcemap --remote-debugging-port=9229 --watch",
     "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:win": "npm run build && electron-builder --win --config",
@@ -26,68 +30,50 @@
     "deploy:linux": "npm run build && electron-builder --linux --config --publish always"
   },
   "dependencies": {
-    "@electron-toolkit/preload": "^1.0.3",
-    "@electron-toolkit/utils": "^1.0.2",
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
     "dayjs": "^1.11.9",
-    "electron-log": "^4.4.8",
-    "electron-store": "^8.1.0",
-    "electron-updater": "^5.3.0",
+    "electron-log": "^5.4.4",
+    "electron-store": "^11.0.2",
+    "electron-updater": "^6.8.9",
     "element-plus": "^2.3.12",
     "markdown-it": "^13.0.1",
     "markdown-it-highlightjs": "^4.0.1",
+    "md-editor-v3": "^6.5.3",
     "pinia": "^2.1.6",
     "sequelize": "^6.32.1",
-    "sqlite3": "^5.1.6",
+    "sqlite3": "^5.1.7",
     "umzug": "^3.3.1",
     "vue-router": "^4.2.4",
     "vue-timer-hook": "^1.0.84"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.7.1",
-    "@commitlint/config-conventional": "^17.7.0",
-    "@electron-toolkit/tsconfig": "^1.0.1",
-    "@electron/notarize": "^1.2.4",
+    "@electron-toolkit/tsconfig": "^2.0.0",
+    "@electron/notarize": "^3.1.1",
     "@iconify-json/carbon": "^1.1.21",
     "@iconify-json/iconoir": "^1.1.32",
     "@iconify-json/ri": "^1.1.12",
     "@rushstack/eslint-patch": "^1.3.3",
-    "@types/node": "16.18.21",
-    "@vitejs/plugin-vue": "^4.3.4",
+    "@types/node": "^22.20.0",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "ajv": "^8.12.0",
-    "cz-conventional-changelog": "^3.3.0",
-    "electron": "^22.3.23",
-    "electron-builder": "^23.6.0",
-    "electron-builder-squirrel-windows": "^24.6.4",
-    "electron-vite": "^1.0.27",
+    "kacl": "^1.1.1",
+    "electron": "^36.9.5",
+    "electron-builder": "^26.15.3",
+    "electron-builder-squirrel-windows": "^26.15.3",
+    "electron-vite": "^5.0.0",
     "eslint": "^8.48.0",
     "eslint-plugin-vue": "^9.17.0",
     "husky": "^8.0.3",
     "less": "^4.2.0",
     "prettier": "^2.8.8",
-    "standard-version": "^9.5.0",
-    "typescript": "^4.9.5",
+    "typescript": "^5.8.3",
     "unplugin-icons": "^0.16.6",
-    "vite": "^4.4.9",
-    "vue": "^3.3.4",
-    "vue-tsc": "^1.8.8"
+    "vite": "^7.3.5",
+    "vue": "^3.5.38",
+    "vue-tsc": "^3.3.5"
   },
-  "packageManager": "pnpm@8.5.1",
-  "husky": {
-    "hooks": {
-      "commit-msg": "npm run lint:commit"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "standard-version": {
-    "skip": {
-      "commit": false,
-      "tag": true
-    }
-  }
+  "packageManager": "pnpm@8.5.1"
 }

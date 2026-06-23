@@ -25,8 +25,20 @@ const currentDuration = ref()
 const timer = useStopwatch(0, false)
 
 const timerButtonText = computed(() => {
-  return timer.days.value * 24 + timer.hours.value + ':' + timer.minutes.value + ':' + timer.seconds.value
+  return timer.days.value * 24 + timer.hours.value + ':' + pad(timer.minutes.value) + ':' + pad(timer.seconds.value)
 })
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0')
+}
+
+function floatingState(isRunning: boolean) {
+  return {
+    label: internalModel.value?.label ?? '',
+    elapsed: timerButtonText.value,
+    isRunning
+  }
+}
 
 watch(
   () => timer,
@@ -39,6 +51,7 @@ watch(
     } else {
       currentDuration.value = val.days.value * 24 + val.hours.value + (Math.floor(val.minutes.value / 15) + 1) * 0.25
     }
+    window.api.updateFloating(floatingState(true))
   },
   {
     deep: true
@@ -52,14 +65,17 @@ const timerColor = computed(() => {
 const toggleTimer = (): void => {
   if (timer.isRunning.value) {
     timer.pause()
+    window.api.updateFloating(floatingState(false))
   } else {
     timer.start()
+    window.api.showFloating(floatingState(true))
   }
 }
 
 const resetTimer = (): void => {
   timer.reset(0, false)
   currentDuration.value = 0
+  window.api.hideFloating()
 }
 
 const addDuration = () => {

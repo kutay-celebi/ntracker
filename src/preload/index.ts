@@ -6,6 +6,7 @@ import { EntryReportDO } from '@main/db/types/EntryReportDO'
 import { TodoDO, TodoListQuery } from '@main/db/types/Todo'
 import { NTrackerEnv } from '@main/env'
 import { UpdateCheckResult } from 'electron-updater'
+import { TimerState } from '@main/ipc/timer-ipc'
 
 // Custom APIs for renderer
 export const api = {
@@ -56,6 +57,38 @@ export const api = {
   },
   downloadUpdate: (): void => {
     ipcRenderer.send('app.settings.downloadUpdate')
+  },
+  // ── Timer API ──────────────────────────────────────────────────────────────
+  timerStart: (label: string, entryId: string): void => {
+    ipcRenderer.send('timer.start', { label, entryId })
+  },
+  timerPause: (): void => {
+    ipcRenderer.send('timer.pause')
+  },
+  timerResume: (): void => {
+    ipcRenderer.send('timer.resume')
+  },
+  timerReset: (): void => {
+    ipcRenderer.send('timer.reset')
+  },
+  timerRequestAddDuration: (): void => {
+    ipcRenderer.send('timer.requestAddDuration')
+  },
+  timerHideFloating: (): void => {
+    ipcRenderer.send('timer.floating.hide')
+  },
+  timerGetState: (): Promise<TimerState> => {
+    return ipcRenderer.invoke('timer.getState')
+  },
+  onTimerState: (callback: (state: TimerState) => void): (() => void) => {
+    const handler = (_event: unknown, state: TimerState): void => callback(state)
+    ipcRenderer.on('timer.state', handler)
+    return () => ipcRenderer.removeListener('timer.state', handler)
+  },
+  onTimerOpenDialog: (callback: (state: TimerState) => void): (() => void) => {
+    const handler = (_event: unknown, state: TimerState): void => callback(state)
+    ipcRenderer.on('timer.openAddDurationDialog', handler)
+    return () => ipcRenderer.removeListener('timer.openAddDurationDialog', handler)
   }
 }
 
