@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-06-23
+### Fixed
+- **macOS DMG Architecture** — DMG artifact names now include the architecture suffix (`-x64`, `-arm64`) to prevent the "disk not readable" error caused by downloading the wrong architecture build.
+
 ## [1.5.0] - 2026-06-23
 ### Added
 - **Week Navigation Buttons** — Previous and next week buttons added alongside the date picker on the timesheet for faster week navigation.
@@ -75,7 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix seed and migration
 
-[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/kutay-celebi/ntracker/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/kutay-celebi/ntracker/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/kutay-celebi/ntracker/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/kutay-celebi/ntracker/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/kutay-celebi/ntracker/compare/v1.3.0...v1.4.0
