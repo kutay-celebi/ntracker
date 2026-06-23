@@ -9,7 +9,6 @@ import dayjs from 'dayjs'
 import { useSettingsStore } from '@renderer/store/settigs'
 import TimerButton from '@renderer/components/TimerButton.vue'
 import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
-import RiDeleteBin5Line from '~icons/ri/delete-bin-5-line'
 import RiErrorWarningFill from '~icons/ri/error-warning-fill'
 import EntryOverview from '@renderer/components/EntryOverview.vue'
 
@@ -280,15 +279,6 @@ const copyAll = (type: string) => {
       <span v-if="isUnsavedChange">There are unsaved changes!</span>
     </el-button>
 
-    <el-popconfirm title="It will delete entire entry." width="fit-content" @confirm="removeEntry">
-      <template #reference>
-        <el-button type="danger" :disabled="!selectedRow">
-          <ri-delete-bin5-line class="mr-2" />
-          <span>Delete Entry</span>
-        </el-button>
-      </template>
-    </el-popconfirm>
-
     <el-popover trigger="click" width="200px">
       <template #reference>
         <el-button>
@@ -302,13 +292,32 @@ const copyAll = (type: string) => {
       </div>
     </el-popover>
 
-    <el-date-picker
-      v-model="selectedDate"
-      type="week"
-      format="[Week] ww, YYYY"
-      class="float-right"
-      @change="getAllEntries"
-    ></el-date-picker>
+    <div class="float-right" style="display: inline-flex; align-items: center; gap: 4px">
+      <el-button
+        @click="
+          () => {
+            selectedDate = dayjs(selectedDate).subtract(1, 'week').toDate()
+            getAllEntries()
+          }
+        "
+        >&lt;</el-button
+      >
+      <el-date-picker
+        v-model="selectedDate"
+        type="week"
+        format="[Week] ww, YYYY"
+        @change="getAllEntries"
+      ></el-date-picker>
+      <el-button
+        @click="
+          () => {
+            selectedDate = dayjs(selectedDate).add(1, 'week').toDate()
+            getAllEntries()
+          }
+        "
+        >&gt;</el-button
+      >
+    </div>
     <el-table
       v-model:data="entries"
       v-loading=""
@@ -374,7 +383,11 @@ const copyAll = (type: string) => {
       </el-table-column>
 
       <el-table-column v-slot="scope" label="Actions" width="75px">
-        <el-popconfirm title="Are you sure?" @confirm="() => removeTimeLogs(scope.row)">
+        <el-popconfirm
+          title="This will only delete the time logs for this row"
+          width="220px"
+          @confirm="() => removeTimeLogs(scope.row)"
+        >
           <template #reference>
             <iconoir-trash class="action-icon remove-icon clickable" />
           </template>
@@ -383,7 +396,7 @@ const copyAll = (type: string) => {
     </el-table>
   </el-card>
 
-  <entry-overview v-model="selectedRow" @save="onEntrySave" />
+  <entry-overview v-model="selectedRow" @save="onEntrySave" @delete="removeEntry" />
 </template>
 
 <style scoped lang="less">
